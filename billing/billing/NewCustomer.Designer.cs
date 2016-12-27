@@ -38,6 +38,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.TextBoxCusName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.TextBoxVehicleName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +47,8 @@
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.groupBox1.Controls.Add(this.TextBoxVehicleName);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.ButtonSave);
             this.groupBox1.Controls.Add(this.TextBoxVehicleType);
             this.groupBox1.Controls.Add(this.label4);
@@ -56,9 +60,9 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold);
             this.groupBox1.ForeColor = System.Drawing.Color.DarkRed;
-            this.groupBox1.Location = new System.Drawing.Point(12, 3);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(399, 165);
+            this.groupBox1.Size = new System.Drawing.Size(399, 188);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Customer Detail";
@@ -66,7 +70,7 @@
             // ButtonSave
             // 
             this.ButtonSave.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.ButtonSave.Location = new System.Drawing.Point(157, 130);
+            this.ButtonSave.Location = new System.Drawing.Point(157, 156);
             this.ButtonSave.Name = "ButtonSave";
             this.ButtonSave.Size = new System.Drawing.Size(113, 23);
             this.ButtonSave.TabIndex = 4;
@@ -89,9 +93,9 @@
             this.label4.Font = new System.Drawing.Font("Cambria", 10F);
             this.label4.Location = new System.Drawing.Point(15, 105);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 16);
+            this.label4.Size = new System.Drawing.Size(91, 16);
             this.label4.TabIndex = 11;
-            this.label4.Text = "Vehicle Type";
+            this.label4.Text = "Vehicle Model";
             // 
             // TextBoxVehicleNo
             // 
@@ -151,12 +155,30 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Customer Name";
             // 
+            // TextBoxVehicleName
+            // 
+            this.TextBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.TextBoxVehicleName.Location = new System.Drawing.Point(157, 130);
+            this.TextBoxVehicleName.Name = "TextBoxVehicleName";
+            this.TextBoxVehicleName.Size = new System.Drawing.Size(214, 20);
+            this.TextBoxVehicleName.TabIndex = 12;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Cambria", 10F);
+            this.label5.Location = new System.Drawing.Point(15, 131);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(90, 16);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Vehicle Name";
+            // 
             // NewCustomer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
-            this.ClientSize = new System.Drawing.Size(423, 180);
+            this.ClientSize = new System.Drawing.Size(423, 215);
             this.Controls.Add(this.groupBox1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -183,6 +205,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox TextBoxCusName;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox TextBoxVehicleName;
+        private System.Windows.Forms.Label label5;
 
     }
 }

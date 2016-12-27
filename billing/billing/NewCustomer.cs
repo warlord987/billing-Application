@@ -34,7 +34,7 @@ namespace billing
                     ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                     try
                     {
-                        DatabaseConnectObj.SqlQuery("INSERT INTO Customer (CustomerName, CustomerNo, VehicleNo, VehicleType) VALUES ('" + TextBoxCusName.Text.Trim() + "','" + TextBoxCusNo.Text.Trim() + "','" + TextBoxVehicleNo.Text.Trim() + "','" + TextBoxVehicleType.Text.Trim() + "')");
+                        DatabaseConnectObj.SqlQuery("INSERT INTO Customer (CustomerName, CustomerNo, VehicleNo, VehicleType,VehicleName) VALUES ('" + TextBoxCusName.Text.Trim() + "','" + TextBoxCusNo.Text.Trim() + "','" + TextBoxVehicleNo.Text.Trim() + "','" + TextBoxVehicleType.Text.Trim() + "','" + TextBoxVehicleName.Text.Trim() + "')");
                         DatabaseConnectObj.ExecutNonQuery();
                     }
                     catch (Exception ex)

@@ -396,7 +396,7 @@ namespace billing
             int Height = 80, Yincrement = 20;
             string date = DateTimePickerIssued.Value.Month.ToString() + "/" + DateTimePickerIssued.Value.Day.ToString() + "/" + DateTimePickerIssued.Value.Year.ToString();
             Bitmap bmp = Properties.Resources.tecnocraft;
-            Image CompanyLogo = bmp; //add company logo in resources
+            Image CompanyLogo = bmp;
             Rectangle rect2 = new Rectangle(25, 400, 800, 50);
             String[] substrings = ComboBoxClientName.Text.Split('(');
 
@@ -415,10 +415,10 @@ namespace billing
 
             //company address
             e.Graphics.DrawString("From ", FontDesc, Brushes.Gray, new Point(50, Height + Yincrement + 10));
-            e.Graphics.DrawString("address line-1,", FontDesc, Brushes.Black, new Point(110, Height += Yincrement + 10));
-            e.Graphics.DrawString("address line-2 ", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
-            e.Graphics.DrawString("address line-2", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
-            e.Graphics.DrawString("Ph:", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
+            e.Graphics.DrawString("#72, 7th Main, B.O.B Colony,", FontDesc, Brushes.Black, new Point(110, Height += Yincrement + 10));
+            e.Graphics.DrawString("J.P.Nagar, 7th Phase, ", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
+            e.Graphics.DrawString("Bangalore-78.", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
+            e.Graphics.DrawString("Ph: 9886254448,9880369118", FontDesc, Brushes.Black, new Point(110, Height += Yincrement));
             // customer details
             e.Graphics.DrawString("To ", FontDesc, Brushes.Gray, new Point(530, (Height + Yincrement) - (Yincrement * 4)));
             e.Graphics.DrawString(substrings[0] + "\n" + LabelHidden.Text, FontDesc, Brushes.Black, new Point(560, Height - (Yincrement * 3)));

@@ -84,6 +84,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.billDetailsEstimateTableAdapter1 = new billing.BillingDatabaseDataSetTableAdapters.BillDetailsEstimateTableAdapter();
+            this.ComboBoxProductName = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUnitPrice)).BeginInit();
@@ -131,7 +135,7 @@
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(4, 150);
+            this.dataGridView1.Location = new System.Drawing.Point(4, 212);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -151,7 +155,7 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.DarkRed;
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(776, 383);
+            this.dataGridView1.Size = new System.Drawing.Size(776, 321);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
@@ -218,9 +222,9 @@
             this.dateTimePickerSchedule.CalendarForeColor = System.Drawing.SystemColors.ControlLight;
             this.dateTimePickerSchedule.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.dateTimePickerSchedule.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePickerSchedule.Location = new System.Drawing.Point(646, 47);
+            this.dateTimePickerSchedule.Location = new System.Drawing.Point(525, 46);
             this.dateTimePickerSchedule.Name = "dateTimePickerSchedule";
-            this.dateTimePickerSchedule.Size = new System.Drawing.Size(93, 20);
+            this.dateTimePickerSchedule.Size = new System.Drawing.Size(219, 20);
             this.dateTimePickerSchedule.TabIndex = 6;
             // 
             // label16
@@ -228,7 +232,7 @@
             this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label16.Location = new System.Drawing.Point(536, 51);
+            this.label16.Location = new System.Drawing.Point(389, 47);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(104, 16);
             this.label16.TabIndex = 83;
@@ -241,7 +245,7 @@
             this.CheckBoxSchedule.Checked = true;
             this.CheckBoxSchedule.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CheckBoxSchedule.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.CheckBoxSchedule.Location = new System.Drawing.Point(532, 23);
+            this.CheckBoxSchedule.Location = new System.Drawing.Point(631, 19);
             this.CheckBoxSchedule.Name = "CheckBoxSchedule";
             this.CheckBoxSchedule.Size = new System.Drawing.Size(113, 20);
             this.CheckBoxSchedule.TabIndex = 4;
@@ -252,7 +256,7 @@
             // 
             this.NumericUnitPrice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.NumericUnitPrice.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.NumericUnitPrice.Location = new System.Drawing.Point(525, 123);
+            this.NumericUnitPrice.Location = new System.Drawing.Point(525, 164);
             this.NumericUnitPrice.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -276,7 +280,7 @@
             // 
             this.NumericQuantity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.NumericQuantity.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.NumericQuantity.Location = new System.Drawing.Point(414, 123);
+            this.NumericQuantity.Location = new System.Drawing.Point(392, 164);
             this.NumericQuantity.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -288,7 +292,7 @@
             0,
             0});
             this.NumericQuantity.Name = "NumericQuantity";
-            this.NumericQuantity.Size = new System.Drawing.Size(105, 20);
+            this.NumericQuantity.Size = new System.Drawing.Size(127, 20);
             this.NumericQuantity.TabIndex = 10;
             this.NumericQuantity.Value = new decimal(new int[] {
             1,
@@ -361,7 +365,7 @@
             this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label13.Location = new System.Drawing.Point(633, 102);
+            this.label13.Location = new System.Drawing.Point(633, 143);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(30, 16);
             this.label13.TabIndex = 70;
@@ -377,7 +381,7 @@
             this.ComboboxTax.Items.AddRange(new object[] {
             "14.5",
             "5.5"});
-            this.ComboboxTax.Location = new System.Drawing.Point(636, 123);
+            this.ComboboxTax.Location = new System.Drawing.Point(636, 164);
             this.ComboboxTax.Name = "ComboboxTax";
             this.ComboboxTax.Size = new System.Drawing.Size(45, 20);
             this.ComboboxTax.TabIndex = 12;
@@ -401,9 +405,9 @@
             this.ComboBoxClientName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.ComboBoxClientName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.ComboBoxClientName.FormattingEnabled = true;
-            this.ComboBoxClientName.Location = new System.Drawing.Point(105, 26);
+            this.ComboBoxClientName.Location = new System.Drawing.Point(98, 19);
             this.ComboBoxClientName.Name = "ComboBoxClientName";
-            this.ComboBoxClientName.Size = new System.Drawing.Size(202, 20);
+            this.ComboBoxClientName.Size = new System.Drawing.Size(220, 20);
             this.ComboBoxClientName.TabIndex = 0;
             this.ComboBoxClientName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClientName_SelectedIndexChanged);
             this.ComboBoxClientName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ComboBoxClientName_KeyPress);
@@ -413,7 +417,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label5.Location = new System.Drawing.Point(1, 102);
+            this.label5.Location = new System.Drawing.Point(9, 78);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 16);
             this.label5.TabIndex = 54;
@@ -425,6 +429,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.groupBox1.Controls.Add(this.button4);
+            this.groupBox1.Controls.Add(this.button3);
+            this.groupBox1.Controls.Add(this.ComboBoxProductName);
+            this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.NumericInvoiceNo);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
@@ -469,12 +477,13 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Invoice";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // NumericInvoiceNo
             // 
             this.NumericInvoiceNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.NumericInvoiceNo.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.NumericInvoiceNo.Location = new System.Drawing.Point(433, 21);
+            this.NumericInvoiceNo.Location = new System.Drawing.Point(525, 19);
             this.NumericInvoiceNo.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -498,7 +507,7 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.button2.Location = new System.Drawing.Point(380, 122);
+            this.button2.Location = new System.Drawing.Point(324, 163);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(28, 21);
             this.button2.TabIndex = 9;
@@ -510,7 +519,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.button1.Location = new System.Drawing.Point(313, 24);
+            this.button1.Location = new System.Drawing.Point(324, 17);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(28, 23);
             this.button1.TabIndex = 1;
@@ -524,9 +533,9 @@
             this.ComboBoxProduct.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.ComboBoxProduct.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.ComboBoxProduct.FormattingEnabled = true;
-            this.ComboBoxProduct.Location = new System.Drawing.Point(0, 123);
+            this.ComboBoxProduct.Location = new System.Drawing.Point(12, 99);
             this.ComboBoxProduct.Name = "ComboBoxProduct";
-            this.ComboBoxProduct.Size = new System.Drawing.Size(153, 20);
+            this.ComboBoxProduct.Size = new System.Drawing.Size(306, 20);
             this.ComboBoxProduct.TabIndex = 7;
             this.ComboBoxProduct.TextChanged += new System.EventHandler(this.ComboBoxProduct_TextChanged);
             this.ComboBoxProduct.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewInvioce_KeyPress);
@@ -593,9 +602,9 @@
             this.ComboboxDesc.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.ComboboxDesc.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.ComboboxDesc.FormattingEnabled = true;
-            this.ComboboxDesc.Location = new System.Drawing.Point(163, 123);
+            this.ComboboxDesc.Location = new System.Drawing.Point(12, 164);
             this.ComboboxDesc.Name = "ComboboxDesc";
-            this.ComboboxDesc.Size = new System.Drawing.Size(211, 20);
+            this.ComboboxDesc.Size = new System.Drawing.Size(306, 20);
             this.ComboboxDesc.TabIndex = 8;
             this.ComboboxDesc.SelectedIndexChanged += new System.EventHandler(this.ComboboxDesc_SelectedIndexChanged);
             this.ComboboxDesc.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewInvioce_KeyPress);
@@ -637,7 +646,7 @@
             // 
             this.ButtonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonAdd.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.ButtonAdd.Location = new System.Drawing.Point(687, 122);
+            this.ButtonAdd.Location = new System.Drawing.Point(687, 163);
             this.ButtonAdd.Name = "ButtonAdd";
             this.ButtonAdd.Size = new System.Drawing.Size(92, 23);
             this.ButtonAdd.TabIndex = 13;
@@ -650,7 +659,7 @@
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label8.Location = new System.Drawing.Point(522, 102);
+            this.label8.Location = new System.Drawing.Point(522, 143);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(70, 16);
             this.label8.TabIndex = 58;
@@ -661,7 +670,7 @@
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label7.Location = new System.Drawing.Point(411, 102);
+            this.label7.Location = new System.Drawing.Point(389, 142);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(62, 16);
             this.label7.TabIndex = 57;
@@ -671,7 +680,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(160, 102);
+            this.label6.Location = new System.Drawing.Point(9, 143);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(38, 16);
             this.label6.TabIndex = 56;
@@ -684,7 +693,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.LightGray;
-            this.label1.Location = new System.Drawing.Point(-16, 90);
+            this.label1.Location = new System.Drawing.Point(-16, 121);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(829, 12);
             this.label1.TabIndex = 53;
@@ -698,9 +707,9 @@
             this.DateTimePickerIssued.CalendarForeColor = System.Drawing.SystemColors.ControlLight;
             this.DateTimePickerIssued.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.DateTimePickerIssued.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.DateTimePickerIssued.Location = new System.Drawing.Point(433, 49);
+            this.DateTimePickerIssued.Location = new System.Drawing.Point(98, 46);
             this.DateTimePickerIssued.Name = "DateTimePickerIssued";
-            this.DateTimePickerIssued.Size = new System.Drawing.Size(93, 20);
+            this.DateTimePickerIssued.Size = new System.Drawing.Size(220, 20);
             this.DateTimePickerIssued.TabIndex = 5;
             // 
             // LabelHidden
@@ -708,7 +717,7 @@
             this.LabelHidden.AutoSize = true;
             this.LabelHidden.Font = new System.Drawing.Font("Cambria", 8F);
             this.LabelHidden.ForeColor = System.Drawing.Color.DimGray;
-            this.LabelHidden.Location = new System.Drawing.Point(112, 48);
+            this.LabelHidden.Location = new System.Drawing.Point(91, 49);
             this.LabelHidden.Name = "LabelHidden";
             this.LabelHidden.Size = new System.Drawing.Size(0, 12);
             this.LabelHidden.TabIndex = 33;
@@ -717,7 +726,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(341, 53);
+            this.label4.Location = new System.Drawing.Point(9, 48);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(80, 16);
             this.label4.TabIndex = 32;
@@ -727,7 +736,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(341, 25);
+            this.label3.Location = new System.Drawing.Point(389, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(78, 16);
             this.label3.TabIndex = 30;
@@ -737,7 +746,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(16, 27);
+            this.label2.Location = new System.Drawing.Point(9, 22);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 16);
             this.label2.TabIndex = 29;
@@ -746,6 +755,50 @@
             // billDetailsEstimateTableAdapter1
             // 
             this.billDetailsEstimateTableAdapter1.ClearBeforeFill = true;
+            // 
+            // ComboBoxProductName
+            // 
+            this.ComboBoxProductName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxProductName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxProductName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxProductName.FormattingEnabled = true;
+            this.ComboBoxProductName.Location = new System.Drawing.Point(392, 99);
+            this.ComboBoxProductName.Name = "ComboBoxProductName";
+            this.ComboBoxProductName.Size = new System.Drawing.Size(352, 20);
+            this.ComboBoxProductName.TabIndex = 91;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
+            this.label14.Location = new System.Drawing.Point(389, 78);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(44, 16);
+            this.label14.TabIndex = 92;
+            this.label14.Text = "Name";
+            this.label14.Click += new System.EventHandler(this.label14_Click_1);
+            // 
+            // button3
+            // 
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.button3.Location = new System.Drawing.Point(324, 97);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(28, 23);
+            this.button3.TabIndex = 93;
+            this.button3.Text = "+";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.button4.Location = new System.Drawing.Point(750, 97);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(28, 23);
+            this.button4.TabIndex = 94;
+            this.button4.Text = "+";
+            this.button4.UseVisualStyleBackColor = true;
             // 
             // NewInvioce
             // 
@@ -831,5 +884,9 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.NumericUpDown NumericInvoiceNo;
+        private System.Windows.Forms.ComboBox ComboBoxProductName;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
     }
 }

@@ -125,5 +125,10 @@ namespace billing
             e.KeyChar = char.ToUpper(e.KeyChar);
 
         }
+
+        private void TextBoxPaidTo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -158,6 +158,7 @@
             this.TextBoxPaidTo.Name = "TextBoxPaidTo";
             this.TextBoxPaidTo.Size = new System.Drawing.Size(214, 20);
             this.TextBoxPaidTo.TabIndex = 1;
+            this.TextBoxPaidTo.TextChanged += new System.EventHandler(this.TextBoxPaidTo_TextChanged);
             this.TextBoxPaidTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewVoucher_KeyPress);
             // 
             // label2
