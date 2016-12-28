@@ -16,3 +16,7 @@ features:
 2.the expences made by the company.
 3.sends sms to the customer reminding him to pay the dues.
 4.sends the customer when a invoice of his name is generated.
+
+check the below link for the bug fixs and featurs that are going to be added
+
+https://app.asana.com/0/236006448606223/236006448606223
