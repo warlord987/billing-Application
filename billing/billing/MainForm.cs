@@ -160,8 +160,7 @@ namespace billing
         private void ButtonInvoice_Click(object sender, EventArgs e)
         {
                 NewInvioce NewInvoiceObj = new NewInvioce();
-                NewInvoiceObj.ShowDialog();
-            
+                NewInvoiceObj.ShowDialog();   
         }
 
         private void ButtonEstimate_Click(object sender, EventArgs e)

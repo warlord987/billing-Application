@@ -40,7 +40,7 @@ namespace billing
             EditFormFlag = true;
             ComboBoxClientName.Text = st.Split(',').ElementAt(0).Trim();
             LabelHidden.Text = st.Split(',').ElementAt(1);
-            ComboBoxProduct.Text = st.Split(' ').ElementAt(2);
+            ComboBoxVehicleModel.Text = st.Split(' ').ElementAt(2);
         }
 
         public void LoadDescCombobox()
@@ -52,11 +52,11 @@ namespace billing
                 try
                 {
                     DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT ItemDesc FROM Items WHERE (ItemDesc IS NOT NULL) AND (ItemName = '"+ ComboBoxProduct.Text+"')");
+                    DatabaseConnectObj.SqlQuery("SELECT ItemDesc FROM Items WHERE (ItemDesc IS NOT NULL) AND (ItemName = '"+ ComboBoxVehicleModel.Text+"')");
                     dt = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt.Rows)
                     {
-                        ComboboxDesc.Items.Add(row["ItemDesc"].ToString());
+                        ComboboxDesc.Items.Add(row["ItemDesc"].ToString().Trim());
                     }
                 }
                 catch (Exception ex)
@@ -76,7 +76,7 @@ namespace billing
 
         private void LoadProductComboBox()
         {
-            ComboBoxProduct.Items.Clear();
+            ComboBoxVehicleModel.Items.Clear();
             try
             {
                 ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
@@ -87,7 +87,7 @@ namespace billing
                     dt = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt.Rows)
                     {
-                        ComboBoxProduct.Items.Add(row["ItemName"].ToString());
+                        ComboBoxVehicleModel.Items.Add(row["ItemName"].ToString().Trim());
                     }
                 }
                 catch (Exception ex)
@@ -150,7 +150,7 @@ namespace billing
                     dt = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt.Rows)
                     {
-                        NumericInvoiceNo.Text = (Convert.ToInt32(row["Invoiceno"].ToString()) + 1).ToString();
+                        NumericInvoiceNo.Text = (Convert.ToInt32(row["Invoiceno"].ToString().Trim()) + 1).ToString();
                     }
                 }
                 catch (Exception ex)
@@ -220,10 +220,10 @@ namespace billing
                         DatabaseConnectObj.SqlQuery("SELECT CustomerNo, VehicleNo, VehicleType FROM Customer WHERE (CustomerName = '" + CustomerName + "') AND (VehicleNo = '" + vehicleno + "')");
                         dt = DatabaseConnectObj.ExecuteQuery();
                         DataRow row = dt.Rows[0];
-                        string temp = row["CustomerNo"].ToString() + "\n" + row["VehicleNo"].ToString() + "\n" + row["VehicleType"].ToString();
-                        vehicleno = row["VehicleNo"].ToString();
-                        ComboBoxProduct.Text = row["VehicleType"].ToString();
-                        ComboBoxProduct.Focus(); // to trigger the leave event
+                        string temp = row["CustomerNo"].ToString() + "\n" + row["VehicleNo"].ToString().Trim() + "\n" + row["VehicleType"].ToString().Trim();
+                        vehicleno = row["VehicleNo"].ToString().Trim();
+                        ComboBoxVehicleModel.Text = row["VehicleType"].ToString().Trim();
+                        ComboBoxVehicleModel.Focus(); // to trigger the leave event
                         ComboboxDesc.Focus();
                         LabelHidden.Text = temp;
                     }
@@ -281,11 +281,11 @@ namespace billing
                     try
                     {
                         DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT ItemId FROM Items WHERE (ItemName = '" + ComboBoxProduct.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')"); //query to selecte itemid where prdoct name and desc == entered product is and desc
+                        DatabaseConnectObj.SqlQuery("SELECT ItemId FROM Items WHERE (ItemName = '" + ComboBoxVehicleModel.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')"); //query to selecte itemid where prdoct name and desc == entered product is and desc
                         dt = DatabaseConnectObj.ExecuteQuery();
                         foreach (DataRow row in dt.Rows)
                         {
-                            itemid1 = row["ItemId"].ToString();
+                            itemid1 = row["ItemId"].ToString().Trim();
                         }
                     }
                     catch (Exception ex)
@@ -364,7 +364,7 @@ namespace billing
                     dt1 = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt1.Rows)
                     {
-                        cusid1 = row["CustomerId"].ToString();
+                        cusid1 = row["CustomerId"].ToString().Trim();
                     }
                     try // insert invoice first
                     {
@@ -645,11 +645,11 @@ namespace billing
                     try
                     {
                         DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT ItemPrice FROM Items WHERE (ItemName = '" + ComboBoxProduct.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')");
+                        DatabaseConnectObj.SqlQuery("SELECT ItemPrice FROM Items WHERE (ItemName = '" + ComboBoxVehicleModel.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')");
                         dt = DatabaseConnectObj.ExecuteQuery();
                         foreach (DataRow row in dt.Rows)
                         {
-                            NumericUnitPrice.Value = Convert.ToDecimal(row["ItemPrice"].ToString());
+                            NumericUnitPrice.Value = Convert.ToDecimal(row["ItemPrice"].ToString().Trim());
                         }
                     }
                     catch (Exception ex)
@@ -685,7 +685,7 @@ namespace billing
 
         private void ComboBoxProduct_TextChanged(object sender, EventArgs e)
         {
-            if (ComboBoxProduct.Items.Contains(ComboBoxProduct.Text.Trim()))
+            if (ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text.Trim()))
             {
                 LoadDescCombobox();
                 ComboboxDesc.Text = "";
@@ -693,20 +693,20 @@ namespace billing
         }
 
 
-        private void ComboBoxProduct_Leave(object sender, EventArgs e)
+        private void ComboBoxVehicleModel_Leave(object sender, EventArgs e)
         {
-            if (!ComboBoxProduct.Items.Contains(ComboBoxProduct.Text.Trim()))
+            if (!ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Selected Model does not exist, Do you want to add it?", "Delete Confirmation", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    string tempProduct = ComboBoxProduct.Text;
+                    string tempProduct = ComboBoxVehicleModel.Text;
                     try
                     {
                         ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                         try
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice) VALUES ('" + ComboBoxProduct.Text.Trim() + "','0')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice) VALUES ('" + ComboBoxVehicleModel.Text.Trim() + "','0')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                         catch (Exception ex)
@@ -723,12 +723,12 @@ namespace billing
                         MessageBox.Show(ex.Message);
                     }
                     LoadProductComboBox();
-                    ComboBoxProduct.Text = tempProduct;
+                    ComboBoxVehicleModel.Text = tempProduct;
                     LoadDescCombobox();
                 }
                 else
                 {
-                    ComboBoxProduct.Text = "";
+                    ComboBoxVehicleModel.Text = "";
                 }
             }
         }
@@ -762,16 +762,17 @@ namespace billing
             e.KeyChar = char.ToUpper(e.KeyChar);
         }
 
-        private void NewInvioce_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
         }
 
         private void label14_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
