@@ -18,6 +18,8 @@ namespace billing
         private bool EditFormFlag = false;
         private DataTable customerData;
         private DataTable vehicledata;
+        private DataTable itemsData;
+        private string vehicleno;
 
         private void getCustomerData()
         {
@@ -26,6 +28,24 @@ namespace billing
             {
                 DatabaseConnectObj.SqlQuery("SELECT CustomerId, CustomerName, CustomerNo, VehicleNo, VehicleId FROM dbo.Customer");
                 customerData = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
+        private void getItemsData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT ItemId, ItemName, ItemDesc, ItemPrice, VehicleId FROM dbo.Items");
+                itemsData = DatabaseConnectObj.ExecuteQuery();
             }
             catch (Exception ex)
             {
@@ -88,7 +108,7 @@ namespace billing
             {
                 foreach (DataRow row in customerData.Rows)
                 {
-                    ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
+                    ComboboxDesc.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
                 }
             }
             catch (Exception ex)
@@ -99,6 +119,7 @@ namespace billing
 
         private void loadVehiclefield()
         {
+            //move the vehicledata to a parent place so that the sql query shouldnt be executed every time a new customer is added
             getVehicleData();
             ComboBoxVehicleModel.Items.Clear();
             try
@@ -141,6 +162,7 @@ namespace billing
             DateTimePickerIssued.Value = DateTime.Today;
             LoadCusCombobox();
             loadVehiclefield();
+            getItemsData();
             try
             {
                 ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
@@ -188,12 +210,18 @@ namespace billing
         {
             String[] substrings = ComboBoxClientName.Text.Split('(');
             string CustomerName = substrings[0];
-            string vehicleno = substrings[1].Split(')').ElementAt(0).Trim();
+
+            setVehicleNo(substrings[1]);
 
             //load the customers vehicle
-            DataRow[] customerVehicleId = customerData.Select("VehicleId = '" + vehicleno + "'");
-            DataRow[] customerVehicleData = vehicledata.Select("Id = '" + customerVehicleId[0].ToString() + "'");
-            //check if the customer is from database
+            DataRow[] customerRowData = customerData.Select("VehicleNo = '" + vehicleno + "'");
+            DataRow[] vehicleRowData = vehicledata.Select("Id = '" + customerRowData[0]["VehicleId"].ToString().Trim() + "'");
+            ComboBoxVehicleModel.Text = vehicleRowData[0]["VehicleType"].ToString().Trim();
+            ComboBoxVehicleName.Text = vehicleRowData[0]["VehicleName"].ToString().Trim();
+            string temp = customerRowData[0]["CustomerNo"].ToString().Trim() + " " + customerRowData[0]["VehicleNo"].ToString().Trim() + "\n" + vehicleRowData[0]["VehicleType"].ToString().Trim() + " " + vehicleRowData[0]["VehicleName"].ToString().Trim();
+            LabelHidden.Text = temp;
+
+        //check if the customer is from database
             if (ComboBoxClientName.Items.Contains(ComboBoxClientName.Text)) 
             {
                 try // load hidden textox and check if a message is scheduled aand load the desc combo box
@@ -214,6 +242,7 @@ namespace billing
                         }
                         if (TempDue > 0)
                         {
+                            HiddenLabelPreviousDue.Text = "Previous Due: " + TempDue.ToString() + "Rs";
                             MessageBox.Show("this customer has previous due of Rs " + TempDue + " from " + TempInvoiceCount + " invoices");
                         }
                     }
@@ -221,23 +250,7 @@ namespace billing
                     {
                         MessageBox.Show(ex.Message);
                     }
-                    try // load hidden text with customer detail and change product textbox
-                    {
-                        DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT CustomerNo, VehicleNo, VehicleType,VehicleName FROM Customer WHERE (CustomerName = '" + CustomerName + "') AND (VehicleNo = '" + vehicleno + "')");
-                        dt = DatabaseConnectObj.ExecuteQuery();
-                        DataRow row = dt.Rows[0];
-                        string temp = row["CustomerNo"].ToString() + "\n" + row["VehicleNo"].ToString().Trim() + "\n" + row["VehicleType"].ToString().Trim();
-                        vehicleno = row["VehicleNo"].ToString().Trim();
-                        ComboBoxVehicleModel.Text = row["VehicleType"].ToString().Trim();
-                        ComboBoxVehicleModel.Focus(); // to trigger the leave event
-                        ComboboxDesc.Focus();
-                        LabelHidden.Text = temp;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
+                   
                     try // check if a message is scheduled
                     {
                         DataTable dt = new DataTable();
@@ -275,6 +288,11 @@ namespace billing
             {
                 MessageBox.Show("Customer Does Not Exist,please create add the customer");
             }
+        }
+
+        private void setVehicleNo(string input)
+        {
+            vehicleno = input.Split(')').ElementAt(0).Trim();
         }
 
         private void ButtonAdd_Click(object sender, EventArgs e)
@@ -469,16 +487,6 @@ namespace billing
             }
         }
 
-        private void label14_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void label15_Click(object sender, EventArgs e)
-        {
-            NewService NewServiceObj = new NewService();
-            NewServiceObj.ShowDialog();
-        }
 
         private void ButtonPreview_Click(object sender, EventArgs e)
         {
@@ -584,11 +592,6 @@ namespace billing
             i = 0;
         }
 
-        private void ComboBoxClientName_Leave(object sender, EventArgs e)
-        {
-
-        }
-
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             //after add the value to the grid add to string or array or most probably linked list
@@ -690,16 +693,6 @@ namespace billing
             }
         }
 
-        private void ComboBoxProduct_TextChanged(object sender, EventArgs e)
-        {
-            if (ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text.Trim()))
-            {
-                LoadDescCombobox();
-                ComboboxDesc.Text = "";
-            }
-        }
-
-
         private void ComboBoxVehicleModel_Leave(object sender, EventArgs e)
         {
             if (!ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text.Trim()))
@@ -707,13 +700,13 @@ namespace billing
                 DialogResult result = MessageBox.Show("Selected Model does not exist, Do you want to add it?", "Delete Confirmation", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    string tempProduct = ComboBoxVehicleModel.Text;
+                    string newVehicleType = ComboBoxVehicleModel.Text.Trim();
                     try
                     {
                         ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                         try
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice) VALUES ('" + ComboBoxVehicleModel.Text.Trim() + "','0')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Vehicle (VehicleType) VALUES ('" + newVehicleType + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                         catch (Exception ex)
@@ -729,9 +722,7 @@ namespace billing
                     {
                         MessageBox.Show(ex.Message);
                     }
-                    loadVehiclefield();
-                    ComboBoxVehicleModel.Text = tempProduct;
-                    LoadDescCombobox();
+                    ComboBoxVehicleModel.Items.Add(ComboBoxVehicleModel.Text);
                 }
                 else
                 {
@@ -781,6 +772,115 @@ namespace billing
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void loadComboBoxVehicleName(DataTable data, String selector)
+        {
+            ComboBoxVehicleName.Text = "";
+            ComboBoxVehicleName.Items.Clear();
+            try
+            {
+                try
+                {
+                    DataRow[] VehicleNames = data.Select("VehicleType = '" + selector + "' AND VehicleName <> ''");
+                    foreach (DataRow row in VehicleNames)
+                    {
+                        ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
+                    }
+                    if (ComboBoxVehicleName.Items.Count > 0)
+                    {
+                        ComboBoxVehicleName.Text = ComboBoxVehicleName.Items[0].ToString().Trim();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void loadcomboboxDesc(DataTable itemsTable, DataTable vehicleTable,DataTable customerTable)
+        {
+            ComboboxDesc.Text = "";
+            ComboboxDesc.Items.Clear();
+            try
+            {
+                try
+                {
+                    DataRow[] customerRowData = customerTable.Select("VehicleNo = '" + vehicleno + "'");
+                    DataRow[] vehicleRowData = vehicleTable.Select("Id = '" + customerRowData[0]["VehicleId"].ToString().Trim() + "'");
+                    string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+
+                    DataRow[] itemsData = itemsTable.Select("VehicleId = '" + selectedVehicleId + "'");
+
+                    foreach (DataRow row in itemsData)
+                    {
+                        ComboboxDesc.Items.Add(row["ItemName"].ToString().Trim());
+                    }
+                    if (ComboboxDesc.Items.Count > 0)
+                    {
+                        ComboboxDesc.Text = ComboboxDesc.Items[0].ToString().Trim();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ComboBoxVehicleModel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            loadComboBoxVehicleName(vehicledata, ComboBoxVehicleModel.Text);
+        }
+
+        private void ComboBoxVehicleName_Leave(object sender, EventArgs e)
+        {
+            if (!ComboBoxVehicleName.Items.Contains(ComboBoxVehicleName.Text.Trim()))
+            {
+                DialogResult result = MessageBox.Show("Selected Name does not exist for the model "+ComboBoxVehicleModel.Text+", Do you want to add it?", "Delete Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    string newVehicleType = ComboBoxVehicleName.Text.Trim();
+                    try
+                    {
+                        ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+                        try
+                        {
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Vehicle (VehicleType, VehicleName) VALUES ('"+ComboBoxVehicleModel.Text+"','"+ComboBoxVehicleName.Text+"')");
+                            DatabaseConnectObj.ExecutNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        finally
+                        {
+                            DatabaseConnectObj.DatabaseConnectionClose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    ComboBoxVehicleName.Items.Add(ComboBoxVehicleName.Text);
+                }
+                else
+                {
+                    ComboBoxVehicleName.Text = "";
+                }
+            }
+        }
+
+        private void ComboboxDesc_Enter(object sender, EventArgs e)
         {
 
         }
