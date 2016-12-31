@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ComboBoxVehicleName = new System.Windows.Forms.ComboBox();
+            this.ComboBoxVehicleModel = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.ButtonSave = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -38,8 +40,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.TextBoxCusName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.ComboBoxVehicleModel = new System.Windows.Forms.ComboBox();
-            this.ComboBoxVehicleName = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +66,31 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Customer Detail";
+            // 
+            // ComboBoxVehicleName
+            // 
+            this.ComboBoxVehicleName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxVehicleName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxVehicleName.FormattingEnabled = true;
+            this.ComboBoxVehicleName.Location = new System.Drawing.Point(157, 131);
+            this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
+            this.ComboBoxVehicleName.Size = new System.Drawing.Size(214, 20);
+            this.ComboBoxVehicleName.TabIndex = 4;
+            this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
+            // 
+            // ComboBoxVehicleModel
+            // 
+            this.ComboBoxVehicleModel.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxVehicleModel.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxVehicleModel.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxVehicleModel.FormattingEnabled = true;
+            this.ComboBoxVehicleModel.Location = new System.Drawing.Point(157, 105);
+            this.ComboBoxVehicleModel.Name = "ComboBoxVehicleModel";
+            this.ComboBoxVehicleModel.Size = new System.Drawing.Size(214, 20);
+            this.ComboBoxVehicleModel.TabIndex = 3;
+            this.ComboBoxVehicleModel.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleModel_SelectedIndexChanged);
+            this.ComboBoxVehicleModel.Leave += new System.EventHandler(this.ComboBoxVehicleModel_Leave);
             // 
             // label5
             // 
@@ -155,30 +180,6 @@
             this.label1.Size = new System.Drawing.Size(106, 16);
             this.label1.TabIndex = 5;
             this.label1.Text = "Customer Name";
-            // 
-            // ComboBoxVehicleModel
-            // 
-            this.ComboBoxVehicleModel.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.ComboBoxVehicleModel.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.ComboBoxVehicleModel.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.ComboBoxVehicleModel.FormattingEnabled = true;
-            this.ComboBoxVehicleModel.Location = new System.Drawing.Point(157, 105);
-            this.ComboBoxVehicleModel.Name = "ComboBoxVehicleModel";
-            this.ComboBoxVehicleModel.Size = new System.Drawing.Size(214, 20);
-            this.ComboBoxVehicleModel.TabIndex = 3;
-            this.ComboBoxVehicleModel.Leave += new System.EventHandler(this.ComboBoxVehicleModel_Leave);
-            // 
-            // ComboBoxVehicleName
-            // 
-            this.ComboBoxVehicleName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.ComboBoxVehicleName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.ComboBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.ComboBoxVehicleName.FormattingEnabled = true;
-            this.ComboBoxVehicleName.Location = new System.Drawing.Point(157, 131);
-            this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
-            this.ComboBoxVehicleName.Size = new System.Drawing.Size(214, 20);
-            this.ComboBoxVehicleName.TabIndex = 4;
-            this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
             // 
             // NewCustomer
             // 

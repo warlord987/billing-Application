@@ -16,6 +16,44 @@ namespace billing
         private bool FormLoadFlag = false;
         private decimal UnitPriceTemp = 0;
         private bool EditFormFlag = false;
+        private DataTable customerData;
+        private DataTable vehicledata;
+
+        private void getCustomerData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT CustomerId, CustomerName, CustomerNo, VehicleNo, VehicleId FROM dbo.Customer");
+                customerData = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
+        private void getVehicleData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT Id, VehicleType, VehicleName FROM dbo.Vehicle");
+                vehicledata = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
 
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -48,24 +86,9 @@ namespace billing
             ComboboxDesc.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                try
+                foreach (DataRow row in customerData.Rows)
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT ItemDesc FROM Items WHERE (ItemDesc IS NOT NULL) AND (ItemName = '"+ ComboBoxVehicleModel.Text+"')");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ComboboxDesc.Items.Add(row["ItemDesc"].ToString().Trim());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
                 }
             }
             catch (Exception ex)
@@ -74,29 +97,21 @@ namespace billing
             }
         }
 
-        private void LoadProductComboBox()
+        private void loadVehiclefield()
         {
+            getVehicleData();
             ComboBoxVehicleModel.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                try
+                DataTable VehicleTypeTable = vehicledata.DefaultView.ToTable(true, "VehicleType");
+                foreach (DataRow row in VehicleTypeTable.Rows)
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT DISTINCT ItemName FROM Items");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ComboBoxVehicleModel.Items.Add(row["ItemName"].ToString().Trim());
-                    }
+                    ComboBoxVehicleModel.Items.Add(row["VehicleType"].ToString().Trim());
                 }
-                catch (Exception ex)
+                DataTable VehicleNameTable = vehicledata.DefaultView.ToTable(true, "VehicleName");
+                foreach (DataRow row in VehicleNameTable.Rows)
                 {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
                 }
             }
             catch (Exception ex)
@@ -104,30 +119,16 @@ namespace billing
                 MessageBox.Show(ex.Message);
             }
         }
-        
+
         public void LoadCusCombobox()
         {
+            getCustomerData();
             ComboBoxClientName.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                try
+                foreach (DataRow row in customerData.Rows)
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT CustomerName,VehicleNo FROM Customer");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
                 }
             }
             catch (Exception ex)
@@ -139,7 +140,7 @@ namespace billing
         {
             DateTimePickerIssued.Value = DateTime.Today;
             LoadCusCombobox();
-            LoadProductComboBox();
+            loadVehiclefield();
             try
             {
                 ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
@@ -185,13 +186,19 @@ namespace billing
 
         private void ComboBoxClientName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ComboBoxClientName.Items.Contains(ComboBoxClientName.Text)) //check if the customer is from database
+            String[] substrings = ComboBoxClientName.Text.Split('(');
+            string CustomerName = substrings[0];
+            string vehicleno = substrings[1].Split(')').ElementAt(0).Trim();
+
+            //load the customers vehicle
+            DataRow[] customerVehicleId = customerData.Select("VehicleId = '" + vehicleno + "'");
+            DataRow[] customerVehicleData = vehicledata.Select("Id = '" + customerVehicleId[0].ToString() + "'");
+            //check if the customer is from database
+            if (ComboBoxClientName.Items.Contains(ComboBoxClientName.Text)) 
             {
                 try // load hidden textox and check if a message is scheduled aand load the desc combo box
                 {
-                    String[] substrings = ComboBoxClientName.Text.Split('(');
-                    string CustomerName = substrings[0];
-                    string vehicleno = substrings[1].Split(')').ElementAt(0).Trim();
+                    
                     ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                     try // load hidden text with customer detail and change product textbox
                     {
@@ -217,7 +224,7 @@ namespace billing
                     try // load hidden text with customer detail and change product textbox
                     {
                         DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT CustomerNo, VehicleNo, VehicleType FROM Customer WHERE (CustomerName = '" + CustomerName + "') AND (VehicleNo = '" + vehicleno + "')");
+                        DatabaseConnectObj.SqlQuery("SELECT CustomerNo, VehicleNo, VehicleType,VehicleName FROM Customer WHERE (CustomerName = '" + CustomerName + "') AND (VehicleNo = '" + vehicleno + "')");
                         dt = DatabaseConnectObj.ExecuteQuery();
                         DataRow row = dt.Rows[0];
                         string temp = row["CustomerNo"].ToString() + "\n" + row["VehicleNo"].ToString().Trim() + "\n" + row["VehicleType"].ToString().Trim();
@@ -266,7 +273,7 @@ namespace billing
             }
             else
             {
-                MessageBox.Show("Product Does NotExist create the prooduct first");
+                MessageBox.Show("Customer Does Not Exist,please create add the customer");
             }
         }
 
@@ -722,7 +729,7 @@ namespace billing
                     {
                         MessageBox.Show(ex.Message);
                     }
-                    LoadProductComboBox();
+                    loadVehiclefield();
                     ComboBoxVehicleModel.Text = tempProduct;
                     LoadDescCombobox();
                 }
@@ -748,6 +755,7 @@ namespace billing
             NewCustomer NewCustomerObj = new NewCustomer();
             NewCustomerObj.ShowDialog();
             LoadCusCombobox();
+            loadVehiclefield();
         }
 
         private void button2_Click(object sender, EventArgs e)
