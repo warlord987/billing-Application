@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ComboBoxItemName = new System.Windows.Forms.ComboBox();
+            this.ComboBoxVehicleName = new System.Windows.Forms.ComboBox();
+            this.LabelVehicleName = new System.Windows.Forms.Label();
             this.ComboBoxVehicleModel = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ButtonSave = new System.Windows.Forms.Button();
             this.TextBoxUnitPrice = new System.Windows.Forms.TextBox();
             this.labelunit = new System.Windows.Forms.Label();
-            this.TextBoxItemName = new System.Windows.Forms.TextBox();
             this.LabelItemName = new System.Windows.Forms.Label();
             this.label = new System.Windows.Forms.Label();
-            this.ComboBoxVehicleName = new System.Windows.Forms.ComboBox();
-            this.LabelVehicleName = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,6 +47,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.groupBox1.Controls.Add(this.ComboBoxItemName);
             this.groupBox1.Controls.Add(this.ComboBoxVehicleName);
             this.groupBox1.Controls.Add(this.LabelVehicleName);
             this.groupBox1.Controls.Add(this.ComboBoxVehicleModel);
@@ -54,7 +55,6 @@
             this.groupBox1.Controls.Add(this.ButtonSave);
             this.groupBox1.Controls.Add(this.TextBoxUnitPrice);
             this.groupBox1.Controls.Add(this.labelunit);
-            this.groupBox1.Controls.Add(this.TextBoxItemName);
             this.groupBox1.Controls.Add(this.LabelItemName);
             this.groupBox1.Controls.Add(this.label);
             this.groupBox1.Font = new System.Drawing.Font("Cambria", 12F, System.Drawing.FontStyle.Bold);
@@ -65,6 +65,43 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "New Product or Service";
+            // 
+            // ComboBoxItemName
+            // 
+            this.ComboBoxItemName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxItemName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxItemName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxItemName.FormattingEnabled = true;
+            this.ComboBoxItemName.Location = new System.Drawing.Point(148, 78);
+            this.ComboBoxItemName.Name = "ComboBoxItemName";
+            this.ComboBoxItemName.Size = new System.Drawing.Size(223, 20);
+            this.ComboBoxItemName.TabIndex = 2;
+            this.ComboBoxItemName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxItemName_SelectedIndexChanged);
+            this.ComboBoxItemName.Enter += new System.EventHandler(this.ComboBoxItemName_Enter);
+            this.ComboBoxItemName.Leave += new System.EventHandler(this.ComboBoxItemName_Leave);
+            // 
+            // ComboBoxVehicleName
+            // 
+            this.ComboBoxVehicleName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxVehicleName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxVehicleName.FormattingEnabled = true;
+            this.ComboBoxVehicleName.Location = new System.Drawing.Point(148, 52);
+            this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
+            this.ComboBoxVehicleName.Size = new System.Drawing.Size(223, 20);
+            this.ComboBoxVehicleName.TabIndex = 1;
+            this.ComboBoxVehicleName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleName_SelectedIndexChanged);
+            this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
+            // 
+            // LabelVehicleName
+            // 
+            this.LabelVehicleName.AutoSize = true;
+            this.LabelVehicleName.Font = new System.Drawing.Font("Cambria", 10F);
+            this.LabelVehicleName.Location = new System.Drawing.Point(6, 53);
+            this.LabelVehicleName.Name = "LabelVehicleName";
+            this.LabelVehicleName.Size = new System.Drawing.Size(90, 16);
+            this.LabelVehicleName.TabIndex = 16;
+            this.LabelVehicleName.Text = "Vehicle Name";
             // 
             // ComboBoxVehicleModel
             // 
@@ -96,7 +133,7 @@
             this.ButtonSave.Location = new System.Drawing.Point(148, 130);
             this.ButtonSave.Name = "ButtonSave";
             this.ButtonSave.Size = new System.Drawing.Size(113, 23);
-            this.ButtonSave.TabIndex = 3;
+            this.ButtonSave.TabIndex = 4;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
             this.ButtonSave.Click += new System.EventHandler(this.ButtonSave_Click);
@@ -107,7 +144,7 @@
             this.TextBoxUnitPrice.Location = new System.Drawing.Point(148, 104);
             this.TextBoxUnitPrice.Name = "TextBoxUnitPrice";
             this.TextBoxUnitPrice.Size = new System.Drawing.Size(223, 20);
-            this.TextBoxUnitPrice.TabIndex = 2;
+            this.TextBoxUnitPrice.TabIndex = 3;
             this.TextBoxUnitPrice.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewService_KeyPress);
             // 
             // labelunit
@@ -119,15 +156,6 @@
             this.labelunit.Size = new System.Drawing.Size(68, 16);
             this.labelunit.TabIndex = 9;
             this.labelunit.Text = "Unit Price";
-            // 
-            // TextBoxItemName
-            // 
-            this.TextBoxItemName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.TextBoxItemName.Location = new System.Drawing.Point(148, 78);
-            this.TextBoxItemName.Name = "TextBoxItemName";
-            this.TextBoxItemName.Size = new System.Drawing.Size(223, 20);
-            this.TextBoxItemName.TabIndex = 1;
-            this.TextBoxItemName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewService_KeyPress);
             // 
             // LabelItemName
             // 
@@ -148,28 +176,6 @@
             this.label.Size = new System.Drawing.Size(84, 16);
             this.label.TabIndex = 5;
             this.label.Text = "Model Name";
-            // 
-            // ComboBoxVehicleName
-            // 
-            this.ComboBoxVehicleName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.ComboBoxVehicleName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.ComboBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.ComboBoxVehicleName.FormattingEnabled = true;
-            this.ComboBoxVehicleName.Location = new System.Drawing.Point(148, 52);
-            this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
-            this.ComboBoxVehicleName.Size = new System.Drawing.Size(223, 20);
-            this.ComboBoxVehicleName.TabIndex = 15;
-            this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
-            // 
-            // LabelVehicleName
-            // 
-            this.LabelVehicleName.AutoSize = true;
-            this.LabelVehicleName.Font = new System.Drawing.Font("Cambria", 10F);
-            this.LabelVehicleName.Location = new System.Drawing.Point(6, 53);
-            this.LabelVehicleName.Name = "LabelVehicleName";
-            this.LabelVehicleName.Size = new System.Drawing.Size(90, 16);
-            this.LabelVehicleName.TabIndex = 16;
-            this.LabelVehicleName.Text = "Vehicle Name";
             // 
             // NewService
             // 
@@ -199,12 +205,12 @@
         private System.Windows.Forms.Button ButtonSave;
         private System.Windows.Forms.TextBox TextBoxUnitPrice;
         private System.Windows.Forms.Label labelunit;
-        private System.Windows.Forms.TextBox TextBoxItemName;
         private System.Windows.Forms.Label LabelItemName;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox ComboBoxVehicleModel;
         private System.Windows.Forms.ComboBox ComboBoxVehicleName;
         private System.Windows.Forms.Label LabelVehicleName;
+        private System.Windows.Forms.ComboBox ComboBoxItemName;
     }
 }

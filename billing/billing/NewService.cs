@@ -13,12 +13,44 @@ namespace billing
     {
         private DataTable customerVehicleData;
         private DataTable CustomerItemData;
+        private string p1;
+        private string p2;
+        private string p3;
         public NewService()
         {
             InitializeComponent();
             ButtonSave.DialogResult = DialogResult.OK;
             customerVehicleData = getCustomerVehicleData();
             CustomerItemData = getCustomerItemData();
+            loadComboBoxVehicleModel(customerVehicleData);
+            loadComboBoxVehicleName(customerVehicleData, "");
+        }
+
+        public NewService(string vehicleModel,string vehicleName)
+        {
+            InitializeComponent();
+            ButtonSave.DialogResult = DialogResult.OK;
+            customerVehicleData = getCustomerVehicleData();
+            CustomerItemData = getCustomerItemData();
+            loadComboBoxVehicleModel(customerVehicleData);
+            loadComboBoxVehicleName(customerVehicleData, "");
+            ComboBoxVehicleModel.Text = vehicleModel;
+            ComboBoxVehicleName.Text = vehicleName;
+            loadComboBoxItemName(CustomerItemData, customerVehicleData);
+        }
+
+        public NewService(string vehicleModel, string vehicleName, string newItemName)
+        {
+            InitializeComponent();
+            ButtonSave.DialogResult = DialogResult.OK;
+            customerVehicleData = getCustomerVehicleData();
+            CustomerItemData = getCustomerItemData();
+            loadComboBoxVehicleModel(customerVehicleData);
+            loadComboBoxVehicleName(customerVehicleData, "");
+            ComboBoxVehicleModel.Text = vehicleModel;
+            ComboBoxVehicleName.Text = vehicleName;
+            loadComboBoxItemName(CustomerItemData, customerVehicleData);
+            ComboBoxItemName.Text = newItemName;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -30,25 +62,23 @@ namespace billing
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            DataRow[] vehicleRowData = customerVehicleData.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
-            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
-            DataRow[] vehicleitem = CustomerItemData.Select("VehicleId = '" + selectedVehicleId + "' AND itemName = '"+TextBoxItemName.Text.Trim()+"'");
-
             if (ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text) && ComboBoxVehicleName.Items.Contains(ComboBoxVehicleName.Text))
             {
                 try
                 {
+                    DataRow[] vehicleRowData = customerVehicleData.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                    string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
                     ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                     try
                     {
-                        if (vehicleitem.Length > 0)
+                        if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
                         {
-                            DatabaseConnectObj.SqlQuery("UPDATE Items SET ItemPrice = @ItemPrice WHERE (ItemId = '"+vehicleitem[0]["ItemId"].ToString().Trim()+"')");
+                            DatabaseConnectObj.SqlQuery("UPDATE Items SET ItemPrice = '" + TextBoxUnitPrice.Text + "' WHERE (VehicleId = '" + selectedVehicleId + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                         else
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice,VehicleId) VALUES ('" + TextBoxItemName.Text.Trim() + "','" + TextBoxUnitPrice.Text.Trim() + "','" + selectedVehicleId + "')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice,VehicleId) VALUES ('" + ComboBoxItemName.Text.Trim() + "','" + TextBoxUnitPrice.Text.Trim() + "','" + selectedVehicleId + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                     }
@@ -59,7 +89,7 @@ namespace billing
                     finally
                     {
                         ComboBoxVehicleModel.Text = "";
-                        TextBoxItemName.Text = "";
+                        ComboBoxItemName.Text = "";
                         TextBoxUnitPrice.Text = "";
                         DatabaseConnectObj.DatabaseConnectionClose();
                     }
@@ -77,8 +107,7 @@ namespace billing
 
         private void NewService_Load(object sender, EventArgs e)
         {
-            loadComboBoxVehicleModel(customerVehicleData);
-            loadComboBoxVehicleName(customerVehicleData, "");
+           
         }
 
         private DataTable getCustomerVehicleData()
@@ -161,30 +190,47 @@ namespace billing
             }
         }
 
-        private void loadComboBoxVehicleName(DataTable data, String selector)
+        private void loadComboBoxVehicleName(DataTable vehicleTable, String selector)
         {
             ComboBoxVehicleName.Text = "";
             ComboBoxVehicleName.Items.Clear();
             try
             {
-                try
+                DataRow[] VehicleNames = vehicleTable.Select("VehicleType = '" + selector + "' AND VehicleName <> ''");
+                foreach (DataRow row in VehicleNames)
                 {
-                    DataRow[] VehicleNames = data.Select("VehicleType = '" + selector + "' AND VehicleName <> ''");
-                    foreach (DataRow row in VehicleNames)
-                    {
-                        ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
-                    }
-                    if (ComboBoxVehicleName.Items.Count > 0)
-                    {
-                        ComboBoxVehicleName.Text = ComboBoxVehicleName.Items[0].ToString().Trim();
-                    }
+                    ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
                 }
-                catch (Exception ex)
+                if (ComboBoxVehicleName.Items.Count > 0)
                 {
-                    MessageBox.Show(ex.Message);
+                    ComboBoxVehicleName.Text = ComboBoxVehicleName.Items[0].ToString().Trim();
                 }
             }
             catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void loadComboBoxItemName(DataTable itemTable,DataTable vehicleTable)
+        {
+            ComboBoxItemName.Text = "";
+            ComboBoxItemName.Items.Clear();
+            try
+            {
+                DataRow[] vehicleRowData = vehicleTable.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                DataRow[] vehicleitem = itemTable.Select("VehicleId = '" + selectedVehicleId + "'");
+                foreach (DataRow row in vehicleitem)
+                {
+                    ComboBoxItemName.Items.Add(row["ItemName"].ToString().Trim());
+                }
+                if (ComboBoxItemName.Items.Count > 0)
+                {
+                    ComboBoxItemName.Text = ComboBoxItemName.Items[0].ToString().Trim();
+                }
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -287,6 +333,42 @@ namespace billing
                 {
                     ComboBoxVehicleModel.Text = "";
                 }
+            }
+        }
+
+        private void ComboBoxItemName_Enter(object sender, EventArgs e)
+        {
+            ComboBoxItemName.Items.Clear();
+            loadComboBoxItemName(CustomerItemData, customerVehicleData);
+        }
+
+        private void ComboBoxVehicleName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBoxItemName.Items.Clear();
+            loadComboBoxItemName(CustomerItemData, customerVehicleData);
+        }
+
+        private void ComboBoxItemName_Leave(object sender, EventArgs e)
+        {
+            if (!ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
+            {
+                TextBoxUnitPrice.Text = "";
+
+            }
+        }
+
+        private void ComboBoxItemName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
+            {
+                DataRow[] vehicleRowData = customerVehicleData.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                DataRow[] itemRowData = CustomerItemData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
+                TextBoxUnitPrice.Text = itemRowData[0]["ItemPrice"].ToString().Trim();
+            }
+            else
+            {
+                TextBoxUnitPrice.Text = "";
             }
         }
     }
