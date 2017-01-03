@@ -14,8 +14,67 @@ namespace billing
         private bool CheckedFlag;
         private int i;
         private bool FormLoadFlag = false;
-        private decimal UnitPriceTemp = 0;
         private bool EditFormFlag = false;
+        private DataTable customerData;
+        private DataTable vehicledata;
+        private DataTable itemsData;
+        private DataTable laboursdata;
+        private string vehicleno;
+        private decimal Temp;
+
+        private void getCustomerData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT CustomerId, CustomerName, CustomerNo, VehicleNo, VehicleId FROM dbo.Customer");
+                customerData = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " getCustomerData"; MessageBox.Show(output);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
+        private void getItemsData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT ItemId, ItemName, ItemDesc, ItemPrice, VehicleId FROM dbo.Items");
+                itemsData = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " getItemsData"; MessageBox.Show(output);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
+        private void getVehicleData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT Id, VehicleType, VehicleName FROM dbo.Vehicle");
+                vehicledata = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " getVehicleData"; MessageBox.Show(output);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
 
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -40,106 +99,117 @@ namespace billing
             EditFormFlag = true;
             ComboBoxClientName.Text = st.Split(',').ElementAt(0).Trim();
             LabelHidden.Text = st.Split(',').ElementAt(1);
-            ComboBoxProduct.Text = st.Split(' ').ElementAt(2);
+            ComboBoxVehicleModel.Text = st.Split(' ').ElementAt(2);
         }
 
-        public void LoadDescCombobox()
+        public void loadComboBoxItemName(DataTable customerTable,DataTable vehicleTable,DataTable itemsTable)
         {
-            ComboboxDesc.Items.Clear();
+            ComboBoxItemName.Text = "";
+            ComboBoxItemName.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                 try
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT ItemDesc FROM Items WHERE (ItemDesc IS NOT NULL) AND (ItemName = '"+ ComboBoxProduct.Text+"')");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
+                    DataRow[] vehicleRowData = vehicleTable.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                    string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                    DataRow[] itemsData = itemsTable.Select("VehicleId = '" + selectedVehicleId + "'");
+
+                    foreach (DataRow row in itemsData)
                     {
-                        ComboboxDesc.Items.Add(row["ItemDesc"].ToString());
+                        ComboBoxItemName.Items.Add(row["ItemName"].ToString().Trim());
+                    }
+                    if (ComboBoxItemName.Items.Count > 0)
+                    {
+                        ComboBoxItemName.Text = ComboBoxItemName.Items[0].ToString().Trim();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    string output = ex.Message + " loadComboBoxItemName"; MessageBox.Show(output);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string output = ex.Message + " loadComboBoxItemName"; MessageBox.Show(output);
             }
         }
 
-        private void LoadProductComboBox()
+        public void loadComboBoxLabourName(DataTable LabourTable)
         {
-            ComboBoxProduct.Items.Clear();
+            ComboBoxLabourName.Text = "";
+            ComboBoxLabourName.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                 try
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT DISTINCT ItemName FROM Items");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
+                    DataRow[] labourRows = LabourTable.Select("LabourName");
+                    foreach (DataRow row in labourRows)
                     {
-                        ComboBoxProduct.Items.Add(row["ItemName"].ToString());
+                        ComboBoxLabourName.Items.Add(row["LabourName"].ToString().Trim());
+                    }
+                    if (ComboBoxLabourName.Items.Count > 0)
+                    {
+                        ComboBoxLabourName.Text = ComboBoxLabourName.Items[0].ToString().Trim();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    string output = ex.Message + " loadComboBoxLabourName"; MessageBox.Show(output);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string output = ex.Message + " loadComboBoxLabourName"; MessageBox.Show(output);
             }
         }
-        
+
+        private void loadVehiclefield()
+        {
+            //move the vehicledata to a parent place so that the sql query shouldnt be executed every time a new customer is added
+            ComboBoxVehicleModel.Items.Clear();
+            try
+            {
+                DataTable VehicleTypeTable = vehicledata.DefaultView.ToTable(true, "VehicleType");
+                foreach (DataRow row in VehicleTypeTable.Rows)
+                {
+                    ComboBoxVehicleModel.Items.Add(row["VehicleType"].ToString().Trim());
+                }
+                DataTable VehicleNameTable = vehicledata.DefaultView.ToTable(true, "VehicleName");
+                foreach (DataRow row in VehicleNameTable.Rows)
+                {
+                    ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
+                }
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " loadVehiclefield"; MessageBox.Show(output);
+            }
+        }
+
         public void LoadCusCombobox()
         {
             ComboBoxClientName.Items.Clear();
             try
             {
-                ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                try
+                foreach (DataRow row in customerData.Rows)
                 {
-                    DataTable dt = new DataTable();
-                    DatabaseConnectObj.SqlQuery("SELECT CustomerName,VehicleNo FROM Customer");
-                    dt = DatabaseConnectObj.ExecuteQuery();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    DatabaseConnectObj.DatabaseConnectionClose();
+                    ComboBoxClientName.Items.Add(row["CustomerName"].ToString().Trim() + " ( " + row["VehicleNo"].ToString().Trim() + " )");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string output = ex.Message + " LoadCusCombobox"; MessageBox.Show(output);
             }
         }
         private void NewInvioce_Load(object sender, EventArgs e)
         {
             DateTimePickerIssued.Value = DateTime.Today;
+            getCustomerData();
             LoadCusCombobox();
-            LoadProductComboBox();
+            getVehicleData();
+            loadVehiclefield();
+            getItemsData();
+            getLaboursData();
             try
             {
                 ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
@@ -150,21 +220,21 @@ namespace billing
                     dt = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt.Rows)
                     {
-                        NumericInvoiceNo.Text = (Convert.ToInt32(row["Invoiceno"].ToString()) + 1).ToString();
+                        NumericInvoiceNo.Text = (Convert.ToInt32(row["Invoiceno"].ToString().Trim()) + 1).ToString();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    string output = ex.Message + " NewInvioce_Load"; MessageBox.Show(output);
                 }
                 finally
                 {
                     DatabaseConnectObj.DatabaseConnectionClose();
                 }
             }
-            catch (Exception es)
+            catch (Exception ex)
             {
-                MessageBox.Show(es.Message);
+                string output = ex.Message + " NewInvioce_Load"; MessageBox.Show(output);
             }
             if (EditFormFlag == true)
             {
@@ -183,15 +253,45 @@ namespace billing
             }
         }
 
+        private void getLaboursData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT LabourId, LabourName, LabourDesc, LabourPrice FROM Labour");
+                laboursdata = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " getLaboursData"; MessageBox.Show(output);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
         private void ComboBoxClientName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ComboBoxClientName.Items.Contains(ComboBoxClientName.Text)) //check if the customer is from database
+            String[] substrings = ComboBoxClientName.Text.Split('(');
+            string CustomerName = substrings[0];
+
+            setVehicleNo(substrings[1]);
+
+            //load the customers vehicle
+            DataRow[] customerRowData = customerData.Select("VehicleNo = '" + vehicleno + "'");
+            DataRow[] vehicleRowData = vehicledata.Select("Id = '" + customerRowData[0]["VehicleId"].ToString().Trim() + "'");
+            ComboBoxVehicleModel.Text = vehicleRowData[0]["VehicleType"].ToString().Trim();
+            ComboBoxVehicleName.Text = vehicleRowData[0]["VehicleName"].ToString().Trim();
+            string temp = customerRowData[0]["CustomerNo"].ToString().Trim() + " " + customerRowData[0]["VehicleNo"].ToString().Trim() + "\n" + vehicleRowData[0]["VehicleType"].ToString().Trim() + " " + vehicleRowData[0]["VehicleName"].ToString().Trim();
+            LabelHidden.Text = temp;
+
+        //check if the customer is from database
+            if (ComboBoxClientName.Items.Contains(ComboBoxClientName.Text)) 
             {
                 try // load hidden textox and check if a message is scheduled aand load the desc combo box
                 {
-                    String[] substrings = ComboBoxClientName.Text.Split('(');
-                    string CustomerName = substrings[0];
-                    string vehicleno = substrings[1].Split(')').ElementAt(0).Trim();
+                    
                     ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                     try // load hidden text with customer detail and change product textbox
                     {
@@ -207,30 +307,15 @@ namespace billing
                         }
                         if (TempDue > 0)
                         {
+                            HiddenLabelPreviousDue.Text = "Previous Due: " + TempDue.ToString() + "Rs";
                             MessageBox.Show("this customer has previous due of Rs " + TempDue + " from " + TempInvoiceCount + " invoices");
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        string output = ex.Message + " ComboBoxClientName_SelectedIndexChanged"; MessageBox.Show(output);
                     }
-                    try // load hidden text with customer detail and change product textbox
-                    {
-                        DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT CustomerNo, VehicleNo, VehicleType FROM Customer WHERE (CustomerName = '" + CustomerName + "') AND (VehicleNo = '" + vehicleno + "')");
-                        dt = DatabaseConnectObj.ExecuteQuery();
-                        DataRow row = dt.Rows[0];
-                        string temp = row["CustomerNo"].ToString() + "\n" + row["VehicleNo"].ToString() + "\n" + row["VehicleType"].ToString();
-                        vehicleno = row["VehicleNo"].ToString();
-                        ComboBoxProduct.Text = row["VehicleType"].ToString();
-                        ComboBoxProduct.Focus(); // to trigger the leave event
-                        ComboboxDesc.Focus();
-                        LabelHidden.Text = temp;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
+                   
                     try // check if a message is scheduled
                     {
                         DataTable dt = new DataTable();
@@ -251,7 +336,7 @@ namespace billing
                         }
                         else
                         {
-                            MessageBox.Show(ex.Message);
+                            string output = ex.Message + " ComboBoxClientName_SelectedIndexChanged"; MessageBox.Show(output);
                         }
                     }
                     finally
@@ -261,60 +346,43 @@ namespace billing
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    string output = ex.Message + " ComboBoxClientName_SelectedIndexChanged"; MessageBox.Show(output);
                 }
             }
             else
             {
-                MessageBox.Show("Product Does NotExist create the prooduct first");
+                MessageBox.Show("Customer Does Not Exist,please create add the customer");
             }
+        }
+
+        private void setVehicleNo(string input)
+        {
+            vehicleno = input.Split(')').ElementAt(0).Trim();
         }
 
         private void ButtonAdd_Click(object sender, EventArgs e)
         {
-            string itemid1 = "";
-            if (ComboboxDesc.Items.Contains(ComboboxDesc.Text))
-            {
-                try //get item id to fill into datagrid for future use
-                {
-                    ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                    try
-                    {
-                        DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT ItemId FROM Items WHERE (ItemName = '" + ComboBoxProduct.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')"); //query to selecte itemid where prdoct name and desc == entered product is and desc
-                        dt = DatabaseConnectObj.ExecuteQuery();
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            itemid1 = row["ItemId"].ToString();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    finally
-                    {
-                        DatabaseConnectObj.DatabaseConnectionClose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+            DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+            DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
+            string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
 
+            MessageBox.Show(itemid1);
+            if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
+            {
                 if (EditFormFlag == true)
                 {
                     DataTable dataTable = (DataTable)dataGridView1.DataSource;
                     DataRow drToAdd = dataTable.NewRow();
-                    drToAdd["ItemDesc"] = ComboboxDesc.Text.ToString();
+                    drToAdd["ItemDesc"] = ComboBoxItemName.Text.ToString();
                     drToAdd["Quantity"] = NumericQuantity.Value.ToString();
                     drToAdd["price"] = NumericUnitPrice.Value.ToString();
-                    drToAdd["Tax"] = ComboboxTax.Text;
+                    drToAdd["Tax"] = ComboboxItemTax.Text;
                     drToAdd["ItemNo"] = itemid1;
                     dataTable.Rows.Add(drToAdd);
                     dataTable.AcceptChanges();
                     TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
-                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxTax.Text) / 100)))).ToString();
+                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))).ToString();
                     Decimal TempTotal = 0;
                     Decimal TempSubTotal = 0;
                     foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -331,19 +399,24 @@ namespace billing
                 }
                 else
                 {
+                    //calculate total without tax
                     decimal total = (Convert.ToDecimal(NumericQuantity.Value) * Convert.ToDecimal(NumericUnitPrice.Value));
-                    total = total + (total * (Convert.ToDecimal(ComboboxTax.Text) / 100));
-                    dataGridView1.Rows.Add(ComboboxDesc.Text.ToString(), NumericQuantity.Value.ToString(), NumericUnitPrice.Value.ToString(), ComboboxTax.Text, total.ToString(), itemid1);
+                    //add tax
+                    total = total + (total * (Convert.ToDecimal(ComboboxItemTax.Text) / 100));
+                    //add to data grid
+                    dataGridView1.Rows.Add(ComboBoxItemName.Text.ToString(), NumericQuantity.Value.ToString(), NumericUnitPrice.Value.ToString(), ComboboxItemTax.Text, total.ToString(), itemid1);
+                    //update sub total
                     TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
-                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxTax.Text) / 100)))).ToString();
+                    //update total
+                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))).ToString();
                 }
-                ComboboxDesc.Focus();
+                ComboBoxItemName.Focus();
                 ButtonSave.Enabled = true;
             }
             else
             {
                 MessageBox.Show("Please add the new item before adding this to the invoice");
-                ComboboxDesc.Focus();
+                ComboBoxItemName.Focus();
             }
         }
 
@@ -364,7 +437,7 @@ namespace billing
                     dt1 = DatabaseConnectObj.ExecuteQuery();
                     foreach (DataRow row in dt1.Rows)
                     {
-                        cusid1 = row["CustomerId"].ToString();
+                        cusid1 = row["CustomerId"].ToString().Trim();
                     }
                     try // insert invoice first
                     {
@@ -382,7 +455,7 @@ namespace billing
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                     }
 
                     try //select invoiceid to insert invoice with multiple invoice no.
@@ -394,7 +467,7 @@ namespace billing
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                     }
                     try // insert the bill details
                     {
@@ -406,7 +479,7 @@ namespace billing
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                     }
                     if (CheckBoxSchedule.Checked.Equals(true)) // if scheduled box is checked schedule the message
                     {
@@ -420,7 +493,7 @@ namespace billing
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show(ex.Message);
+                                string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                             }
                             finally
                             {
@@ -436,7 +509,7 @@ namespace billing
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show(ex.Message);
+                                string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                             }
                             finally
                             {
@@ -451,7 +524,7 @@ namespace billing
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                 }
                 ButtonSave.Enabled = false;
                 ButtonPreview.Enabled = true;
@@ -462,16 +535,6 @@ namespace billing
             }
         }
 
-        private void label14_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void label15_Click(object sender, EventArgs e)
-        {
-            NewService NewServiceObj = new NewService();
-            NewServiceObj.ShowDialog();
-        }
 
         private void ButtonPreview_Click(object sender, EventArgs e)
         {
@@ -577,23 +640,20 @@ namespace billing
             i = 0;
         }
 
-        private void ComboBoxClientName_Leave(object sender, EventArgs e)
-        {
-
-        }
-
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             //after add the value to the grid add to string or array or most probably linked list
             //then this function is called to change the total value in the grid and the total text box
-            if (FormLoadFlag == true && dataGridView1.Columns[e.ColumnIndex].Name == "UnitPrice" && dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value != null)
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name.ToString().Trim();
+
+            if (FormLoadFlag == true && dataGridView1.Rows[e.RowIndex].Cells[columnName].Value != null)
             {
-                if (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < UnitPriceTemp)
+                if (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
                 {
                     DialogResult result = MessageBox.Show("Do you want to save changes?", "Confirmation", MessageBoxButtons.YesNo);
                     if (result == DialogResult.No)
                     {
-                        dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = UnitPriceTemp;
+                        dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
                     }
                 }
                 decimal total = (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["Quantity"].Value) * Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value));
@@ -606,12 +666,17 @@ namespace billing
                     tempTotal += Convert.ToDecimal(row.Cells["total"].Value);
                     tempSubTotal += Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value);
                 }
+                foreach (DataGridViewRow row in DataGridLabour.Rows)
+                {
+                    tempTotal += Convert.ToDecimal(row.Cells["LabourTotal"].Value);
+                    tempSubTotal += Convert.ToDecimal(row.Cells["LabourCharge"].Value);
+                }
                 TextBoxSubTotal.Text = tempSubTotal.ToString();
                 TextBoxTotal.Text = tempTotal.ToString();
             }
-            else if(FormLoadFlag == true && dataGridView1.Columns[e.ColumnIndex].Name == "UnitPrice" && dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value==null)
+            else if (FormLoadFlag == true && dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value == null)
             {
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = UnitPriceTemp;
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
             }
         }
 
@@ -626,46 +691,13 @@ namespace billing
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                string output = ex.Message + " dataGridView1_UserDeletingRow"; MessageBox.Show(output);
             }
         }
 
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            UnitPriceTemp = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-        }
-
-        private void ComboboxDesc_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ComboboxDesc.Items.Contains(ComboboxDesc.Text.ToString()))
-            {
-                try
-                {
-                    ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-                    try
-                    {
-                        DataTable dt = new DataTable();
-                        DatabaseConnectObj.SqlQuery("SELECT ItemPrice FROM Items WHERE (ItemName = '" + ComboBoxProduct.Text + "') AND (ItemDesc = '" + ComboboxDesc.Text + "')");
-                        dt = DatabaseConnectObj.ExecuteQuery();
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            NumericUnitPrice.Value = Convert.ToDecimal(row["ItemPrice"].ToString());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    finally
-                    {
-                        DatabaseConnectObj.DatabaseConnectionClose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
+            Temp = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
         }
 
 
@@ -683,35 +715,25 @@ namespace billing
             }
         }
 
-        private void ComboBoxProduct_TextChanged(object sender, EventArgs e)
+        private void ComboBoxVehicleModel_Leave(object sender, EventArgs e)
         {
-            if (ComboBoxProduct.Items.Contains(ComboBoxProduct.Text.Trim()))
-            {
-                LoadDescCombobox();
-                ComboboxDesc.Text = "";
-            }
-        }
-
-
-        private void ComboBoxProduct_Leave(object sender, EventArgs e)
-        {
-            if (!ComboBoxProduct.Items.Contains(ComboBoxProduct.Text.Trim()))
+            if (!ComboBoxVehicleModel.Items.Contains(ComboBoxVehicleModel.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Selected Model does not exist, Do you want to add it?", "Delete Confirmation", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    string tempProduct = ComboBoxProduct.Text;
+                    string newVehicleType = ComboBoxVehicleModel.Text.Trim();
                     try
                     {
                         ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                         try
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice) VALUES ('" + ComboBoxProduct.Text.Trim() + "','0')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Vehicle (VehicleType) VALUES ('" + newVehicleType + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            string output = ex.Message + " ComboBoxVehicleModel_Leave"; MessageBox.Show(output);
                         }
                         finally
                         {
@@ -720,22 +742,15 @@ namespace billing
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        string output = ex.Message + " ComboBoxVehicleModel_Leave"; MessageBox.Show(output);
                     }
-                    LoadProductComboBox();
-                    ComboBoxProduct.Text = tempProduct;
-                    LoadDescCombobox();
+                    ComboBoxVehicleModel.Items.Add(ComboBoxVehicleModel.Text);
                 }
                 else
                 {
-                    ComboBoxProduct.Text = "";
+                    ComboBoxVehicleModel.Text = "";
                 }
             }
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void NewInvioce_KeyPress(object sender, KeyPressEventArgs e)
@@ -747,23 +762,22 @@ namespace billing
         {
             NewCustomer NewCustomerObj = new NewCustomer();
             NewCustomerObj.ShowDialog();
+            getCustomerData();
             LoadCusCombobox();
+            getVehicleData();
+            loadVehiclefield();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            NewService NewServiceObj = new NewService();
+            NewService NewServiceObj = new NewService(ComboBoxVehicleModel.Text.Trim(), ComboBoxVehicleName.Text.Trim());
             NewServiceObj.ShowDialog();
-            LoadDescCombobox(); 
+            getItemsData();
         }
 
         private void ComboBoxClientName_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.KeyChar = char.ToUpper(e.KeyChar);
-        }
-
-        private void NewInvioce_KeyDown(object sender, KeyEventArgs e)
-        {
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -774,6 +788,263 @@ namespace billing
         private void label14_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void loadComboBoxVehicleName(DataTable data, String selector)
+        {
+            ComboBoxVehicleName.Text = "";
+            ComboBoxVehicleName.Items.Clear();
+            try
+            {
+                try
+                {
+                    DataRow[] VehicleNames = data.Select("VehicleType = '" + selector + "' AND VehicleName <> ''");
+                    foreach (DataRow row in VehicleNames)
+                    {
+                        ComboBoxVehicleName.Items.Add(row["VehicleName"].ToString().Trim());
+                    }
+                    if (ComboBoxVehicleName.Items.Count > 0)
+                    {
+                        ComboBoxVehicleName.Text = ComboBoxVehicleName.Items[0].ToString().Trim();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string output = ex.Message + " loadComboBoxVehicleName"; MessageBox.Show(output);
+                }
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " loadComboBoxVehicleName"; MessageBox.Show(output);
+            }
+        }
+
+        private void ComboBoxVehicleModel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            loadComboBoxVehicleName(vehicledata, ComboBoxVehicleModel.Text);
+        }
+
+        private void ComboBoxVehicleName_Leave(object sender, EventArgs e)
+        {
+            if (!ComboBoxVehicleName.Items.Contains(ComboBoxVehicleName.Text.Trim()))
+            {
+                DialogResult result = MessageBox.Show("Selected Name does not exist for the model "+ComboBoxVehicleModel.Text+", Do you want to add it?", "Delete Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    string newVehicleType = ComboBoxVehicleName.Text.Trim();
+                    try
+                    {
+                        ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+                        try
+                        {
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Vehicle (VehicleType, VehicleName) VALUES ('"+ComboBoxVehicleModel.Text+"','"+ComboBoxVehicleName.Text+"')");
+                            DatabaseConnectObj.ExecutNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            string output = ex.Message + " ComboBoxVehicleName_Leave"; MessageBox.Show(output);
+                        }
+                        finally
+                        {
+                            DatabaseConnectObj.DatabaseConnectionClose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string output = ex.Message + " ComboBoxVehicleName_Leave"; MessageBox.Show(output);
+                    }
+                    ComboBoxVehicleName.Items.Add(ComboBoxVehicleName.Text);
+                }
+                else
+                {
+                    ComboBoxVehicleName.Text = "";
+                }
+            }
+        }
+
+        private void ComboBoxItemName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text.ToString()))
+            {
+                try
+                {
+                    DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                    string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                    DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '"+ComboBoxItemName.Text.Trim()+"'");
+                    NumericUnitPrice.Value = Convert.ToDecimal(itemRowData[0]["ItemPrice"].ToString().Trim());
+                }
+                catch (Exception ex)
+                {
+                   string output = ex.Message+" ComboBoxItemName_SelectedIndexChanged"; MessageBox.Show(output);
+                }
+            }
+        }
+
+        private void ComboBoxItemName_Enter(object sender, EventArgs e)
+        {
+            ComboBoxItemName.Items.Clear();
+            loadComboBoxItemName(customerData, vehicledata, itemsData);
+        }
+
+        private void ComboBoxVehicleName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBoxItemName.Items.Clear();
+            loadComboBoxItemName(customerData, vehicledata, itemsData);
+        }
+
+        private void ComboBoxItemName_Leave(object sender, EventArgs e)
+        {
+            if(!ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
+            {
+                DialogResult result = MessageBox.Show("the item does not exist, would you like to add a new item?", "Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    NewService NewServiceObj = new NewService(ComboBoxVehicleModel.Text.Trim(), ComboBoxVehicleName.Text.Trim(),ComboBoxItemName.Text.Trim());
+                    NewServiceObj.ShowDialog();
+                    getItemsData();
+                    ComboBoxItemName.Text = "";
+                    ComboBoxItemName.Focus();
+                }
+                ComboBoxItemName.Text = "";
+            }
+        }
+
+        private void ButtonAddLabour_Click(object sender, EventArgs e)
+        {
+            DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+            DataRow[] labourRowData = laboursdata.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
+            string itemid1 = labourRowData[0]["ItemId"].ToString().Trim();
+
+            if (ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text.Trim()))
+            {
+
+                if (EditFormFlag == true)
+                {
+
+                }
+                else
+                {
+                    //calculate total without taxn
+                    decimal labourTotal = (Convert.ToDecimal(NumericLabourCharge.Value));
+                    //add tax
+                    labourTotal = labourTotal + (labourTotal * (Convert.ToDecimal(ComboBoxLabourTax.Text) / 100));
+                    //add to data grid
+                    DataGridLabour.Rows.Add(ComboBoxLabourName.Text.ToString(), NumericLabourCharge.Value.ToString(), ComboBoxLabourTax.Text, labourTotal.ToString(), itemid1);
+                    //update sub total
+                    TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericLabourCharge.Value)).ToString();
+                    //update total
+                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericLabourCharge.Value + (NumericLabourCharge.Value * (Convert.ToDecimal(ComboBoxLabourTax.Text) / 100)))).ToString();
+                }
+                ComboBoxLabourName.Focus();
+                ButtonSave.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("Please add the new labour before adding this to the invoice");
+                ComboBoxLabourName.Focus();
+            }
+        }
+
+        private void DataGridLabour_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            try
+            {
+                Decimal subtotal = Convert.ToInt32(e.Row.Cells["LabourCharge"].Value);
+                Decimal total = Convert.ToDecimal(e.Row.Cells["LabourTotal"].Value);
+                TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) - subtotal).ToString();
+                TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) - total).ToString();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " dataGridView1_UserDeletingRow"; MessageBox.Show(output);
+            }
+        }
+
+        private void DataGridLabour_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            Temp = Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+        }
+
+        private void DataGridLabour_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = DataGridLabour.Columns[e.ColumnIndex].Name.ToString().Trim();
+
+            if (FormLoadFlag == true && DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value != null)
+            {
+                if (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
+                {
+                    DialogResult result = MessageBox.Show("Do you want to save changes?", "Confirmation", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.No)
+                    {
+                        DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+                    }
+                }
+                decimal LabourTotal = (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourCharge"].Value));
+                LabourTotal = LabourTotal + (LabourTotal * (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourTax"].Value) / 100));
+                DataGridLabour.Rows[e.RowIndex].Cells["LabourTotal"].Value = LabourTotal;
+                Decimal tempTotal = 0;
+                Decimal tempSubTotal = 0;
+                foreach (DataGridViewRow row in DataGridLabour.Rows)
+                {
+                    tempTotal += Convert.ToDecimal(row.Cells["LabourTotal"].Value);
+                    tempSubTotal += Convert.ToDecimal(row.Cells["LabourCharge"].Value);
+                }
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    tempTotal += Convert.ToDecimal(row.Cells["total"].Value);
+                    tempSubTotal += Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value);
+                }
+                TextBoxSubTotal.Text = tempSubTotal.ToString();
+                TextBoxTotal.Text = tempTotal.ToString();
+            }
+            else if (FormLoadFlag == true && DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value == null)
+            {
+                DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+            }
+        }
+
+        private void ComboBoxLabourName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text))
+            {
+                try
+                {
+                    DataRow labourRow = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text.Trim() + "'")[0];
+                    NumericUnitPrice.Value = Convert.ToDecimal(labourRow["LabourPrice"].ToString().Trim());
+                }
+                catch (Exception ex)
+                {
+                    string output = ex.Message + " ComboBoxItemName_SelectedIndexChanged"; MessageBox.Show(output);
+                }
+            }
+        }
+
+        private void ComboBoxLabourName_Enter(object sender, EventArgs e)
+        {
+            ComboBoxLabourName.Items.Clear();
+            loadComboBoxLabourName(laboursdata);
+        }
+
+        private void ComboBoxLabourName_Leave(object sender, EventArgs e)
+        {
+            if (!ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text))
+            {
+                DialogResult result = MessageBox.Show("the Labour does not exist, would you like to add a new Labour?", "Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    NewLabour NewServiceObj = new NewLabour(ComboBoxLabourName.Text.Trim());
+                    NewServiceObj.ShowDialog();
+                    getLaboursData();
+                    ComboBoxLabourName.Text = "";
+                    ComboBoxLabourName.Focus();
+                }
+                ComboBoxLabourName.Text = "";
+            }
         }
     }
 }

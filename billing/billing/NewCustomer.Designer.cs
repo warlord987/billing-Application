@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ComboBoxVehicleName = new System.Windows.Forms.ComboBox();
+            this.ComboBoxVehicleModel = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.ButtonSave = new System.Windows.Forms.Button();
-            this.TextBoxVehicleType = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.TextBoxVehicleNo = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -38,8 +40,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.TextBoxCusName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.TextBoxVehicleName = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,10 +47,10 @@
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.groupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.groupBox1.Controls.Add(this.TextBoxVehicleName);
+            this.groupBox1.Controls.Add(this.ComboBoxVehicleName);
+            this.groupBox1.Controls.Add(this.ComboBoxVehicleModel);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.ButtonSave);
-            this.groupBox1.Controls.Add(this.TextBoxVehicleType);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.TextBoxVehicleNo);
             this.groupBox1.Controls.Add(this.label3);
@@ -67,25 +67,51 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Customer Detail";
             // 
+            // ComboBoxVehicleName
+            // 
+            this.ComboBoxVehicleName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxVehicleName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxVehicleName.FormattingEnabled = true;
+            this.ComboBoxVehicleName.Location = new System.Drawing.Point(157, 131);
+            this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
+            this.ComboBoxVehicleName.Size = new System.Drawing.Size(214, 20);
+            this.ComboBoxVehicleName.TabIndex = 4;
+            this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
+            // 
+            // ComboBoxVehicleModel
+            // 
+            this.ComboBoxVehicleModel.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxVehicleModel.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxVehicleModel.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
+            this.ComboBoxVehicleModel.FormattingEnabled = true;
+            this.ComboBoxVehicleModel.Location = new System.Drawing.Point(157, 105);
+            this.ComboBoxVehicleModel.Name = "ComboBoxVehicleModel";
+            this.ComboBoxVehicleModel.Size = new System.Drawing.Size(214, 20);
+            this.ComboBoxVehicleModel.TabIndex = 3;
+            this.ComboBoxVehicleModel.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleModel_SelectedIndexChanged);
+            this.ComboBoxVehicleModel.Leave += new System.EventHandler(this.ComboBoxVehicleModel_Leave);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Cambria", 10F);
+            this.label5.Location = new System.Drawing.Point(15, 131);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(90, 16);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Vehicle Name";
+            // 
             // ButtonSave
             // 
             this.ButtonSave.Font = new System.Drawing.Font("Cambria", 10F, System.Drawing.FontStyle.Bold);
             this.ButtonSave.Location = new System.Drawing.Point(157, 156);
             this.ButtonSave.Name = "ButtonSave";
             this.ButtonSave.Size = new System.Drawing.Size(113, 23);
-            this.ButtonSave.TabIndex = 4;
+            this.ButtonSave.TabIndex = 5;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
             this.ButtonSave.Click += new System.EventHandler(this.ButtonSave_Click_1);
-            // 
-            // TextBoxVehicleType
-            // 
-            this.TextBoxVehicleType.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.TextBoxVehicleType.Location = new System.Drawing.Point(157, 104);
-            this.TextBoxVehicleType.Name = "TextBoxVehicleType";
-            this.TextBoxVehicleType.Size = new System.Drawing.Size(214, 20);
-            this.TextBoxVehicleType.TabIndex = 3;
-            this.TextBoxVehicleType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewCustomer_KeyPress);
             // 
             // label4
             // 
@@ -155,24 +181,6 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Customer Name";
             // 
-            // TextBoxVehicleName
-            // 
-            this.TextBoxVehicleName.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
-            this.TextBoxVehicleName.Location = new System.Drawing.Point(157, 130);
-            this.TextBoxVehicleName.Name = "TextBoxVehicleName";
-            this.TextBoxVehicleName.Size = new System.Drawing.Size(214, 20);
-            this.TextBoxVehicleName.TabIndex = 12;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Cambria", 10F);
-            this.label5.Location = new System.Drawing.Point(15, 131);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(90, 16);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Vehicle Name";
-            // 
             // NewCustomer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,7 +205,6 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button ButtonSave;
-        private System.Windows.Forms.TextBox TextBoxVehicleType;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox TextBoxVehicleNo;
         private System.Windows.Forms.Label label3;
@@ -205,8 +212,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox TextBoxCusName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TextBoxVehicleName;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox ComboBoxVehicleModel;
+        private System.Windows.Forms.ComboBox ComboBoxVehicleName;
 
     }
 }
