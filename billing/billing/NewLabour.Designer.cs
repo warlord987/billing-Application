@@ -67,7 +67,8 @@
             this.ComboBoxLabourName.Location = new System.Drawing.Point(148, 21);
             this.ComboBoxLabourName.Name = "ComboBoxLabourName";
             this.ComboBoxLabourName.Size = new System.Drawing.Size(223, 20);
-            this.ComboBoxLabourName.TabIndex = 2;
+            this.ComboBoxLabourName.TabIndex = 0;
+            this.ComboBoxLabourName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLabourName_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -85,7 +86,7 @@
             this.ButtonSave.Location = new System.Drawing.Point(148, 73);
             this.ButtonSave.Name = "ButtonSave";
             this.ButtonSave.Size = new System.Drawing.Size(113, 23);
-            this.ButtonSave.TabIndex = 4;
+            this.ButtonSave.TabIndex = 2;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
             this.ButtonSave.Click += new System.EventHandler(this.ButtonSave_Click);
@@ -96,7 +97,7 @@
             this.TextBoxUnitPrice.Location = new System.Drawing.Point(148, 47);
             this.TextBoxUnitPrice.Name = "TextBoxUnitPrice";
             this.TextBoxUnitPrice.Size = new System.Drawing.Size(223, 20);
-            this.TextBoxUnitPrice.TabIndex = 3;
+            this.TextBoxUnitPrice.TabIndex = 1;
             // 
             // labelunit
             // 

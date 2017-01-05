@@ -60,3 +60,4 @@ E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.Sel
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.csproj.GenerateResource.Cache
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\RdlCompile.cache
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\RdlCompile.compiled
+E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewLabour.resources

@@ -31,23 +31,16 @@ namespace billing
         {
             ComboBoxLabourName.Text = "";
             ComboBoxLabourName.Items.Clear();
+
             try
             {
-                try
+                foreach (DataRow row in LabourTable.Rows)
                 {
-                    DataRow[] labourRows = LabourTable.Select("LabourName");
-                    foreach (DataRow row in labourRows)
-                    {
-                        ComboBoxLabourName.Items.Add(row["LabourName"].ToString().Trim());
-                    }
-                    if (ComboBoxLabourName.Items.Count > 0)
-                    {
-                        ComboBoxLabourName.Text = ComboBoxLabourName.Items[0].ToString().Trim();
-                    }
+                    ComboBoxLabourName.Items.Add(row["LabourName"].ToString().Trim());
                 }
-                catch (Exception ex)
+                if (ComboBoxLabourName.Items.Count > 0)
                 {
-                    string output = ex.Message + " loadComboBoxLabourName"; MessageBox.Show(output);
+                    ComboBoxLabourName.Text = ComboBoxLabourName.Items[0].ToString().Trim();
                 }
             }
             catch (Exception ex)
@@ -81,23 +74,19 @@ namespace billing
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            if (ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text))
-            {
                 try
                 {
-                    DataRow[] vehicleRowData = customerVehicleData.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
-                    string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
                     ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
                     try
                     {
-                        if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
+                        if (ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text))
                         {
-                            DatabaseConnectObj.SqlQuery("UPDATE Items SET ItemPrice = '" + TextBoxUnitPrice.Text + "' WHERE (VehicleId = '" + selectedVehicleId + "')");
+                            DatabaseConnectObj.SqlQuery("UPDATE Labour SET LabourPrice = '"+TextBoxUnitPrice.Text.Trim()+"' WHERE (LabourName = '"+ComboBoxLabourName.Text.Trim()+"') ");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                         else
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO Items (ItemName, ItemPrice,VehicleId) VALUES ('" + ComboBoxItemName.Text.Trim() + "','" + TextBoxUnitPrice.Text.Trim() + "','" + selectedVehicleId + "')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Labour (LabourName, LabourDesc, LabourPrice) VALUES ('"+ComboBoxLabourName.Text.Trim()+"','','"+TextBoxUnitPrice.Text.Trim()+"')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                     }
@@ -107,21 +96,20 @@ namespace billing
                     }
                     finally
                     {
-                        ComboBoxVehicleModel.Text = "";
-                        ComboBoxItemName.Text = "";
+                        ComboBoxLabourName.Text = "";
                         TextBoxUnitPrice.Text = "";
                         DatabaseConnectObj.DatabaseConnectionClose();
                     }
                 }
-                catch (Exception es)
+                catch (Exception ex)
                 {
-                    MessageBox.Show(es.Message);
+                    string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                 }
-            }
-            else
-            {
-                MessageBox.Show("Please select a model from the drop down list");
-            }
+        }
+
+        private void ComboBoxLabourName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextBoxUnitPrice.Text = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text + "'")[0]["LabourPrice"].ToString().Trim();
         }
     }
 }

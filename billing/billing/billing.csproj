@@ -141,6 +141,12 @@
     <Compile Include="NewInvioce.Designer.cs">
       <DependentUpon>NewInvioce.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewLabour.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewLabour.Designer.cs">
+      <DependentUpon>NewLabour.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -249,6 +255,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewInvioce.resx">
       <DependentUpon>NewInvioce.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewLabour.resx">
+      <DependentUpon>NewLabour.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewService.resx">
       <DependentUpon>NewService.cs</DependentUpon>

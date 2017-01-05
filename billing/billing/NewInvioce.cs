@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Net;
+using System.Collections.Specialized;
+using System.Web;
 
 namespace billing
 {
@@ -13,6 +16,7 @@ namespace billing
     {
         private bool CheckedFlag;
         private int i;
+        private int l;
         private bool FormLoadFlag = false;
         private bool EditFormFlag = false;
         private DataTable customerData;
@@ -138,23 +142,16 @@ namespace billing
         {
             ComboBoxLabourName.Text = "";
             ComboBoxLabourName.Items.Clear();
+
             try
             {
-                try
+                foreach (DataRow row in LabourTable.Rows)
                 {
-                    DataRow[] labourRows = LabourTable.Select("LabourName");
-                    foreach (DataRow row in labourRows)
-                    {
-                        ComboBoxLabourName.Items.Add(row["LabourName"].ToString().Trim());
-                    }
-                    if (ComboBoxLabourName.Items.Count > 0)
-                    {
-                        ComboBoxLabourName.Text = ComboBoxLabourName.Items[0].ToString().Trim();
-                    }
+                    ComboBoxLabourName.Items.Add(row["LabourName"].ToString().Trim());
                 }
-                catch (Exception ex)
+                if (ComboBoxLabourName.Items.Count > 0)
                 {
-                    string output = ex.Message + " loadComboBoxLabourName"; MessageBox.Show(output);
+                    ComboBoxLabourName.Text = ComboBoxLabourName.Items[0].ToString().Trim();
                 }
             }
             catch (Exception ex)
@@ -366,8 +363,6 @@ namespace billing
             string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
             DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
             string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
-
-            MessageBox.Show(itemid1);
             if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
             {
                 if (EditFormFlag == true)
@@ -450,12 +445,17 @@ namespace billing
                             total = total + (total * (Convert.ToDecimal(dataGridView1.Rows[i].Cells["Tax"].Value) / 100));
                             TempTotal += total;
                         }
-                        DatabaseConnectObj.SqlQuery("INSERT INTO Invoice (InvoiceNo, CustomerId, Date, total, due, remark) VALUES ('" + NumericInvoiceNo.Text + "','" + cusid1 + "','" + date + "','" + TempTotal + "','" + (Convert.ToDecimal(TextBoxTotal.Text) - Convert.ToDecimal(TextBoxPaid.Text)).ToString() + "','" + TextBoxRemark.Text + "')");
+                        for (int i = 0; i < DataGridLabour.RowCount;i++)
+                        {
+                            decimal labourTotal = (Convert.ToDecimal(DataGridLabour.Rows[i].Cells["LabourTotal"].Value));
+                            TempTotal += labourTotal;
+                        }
+                            DatabaseConnectObj.SqlQuery("INSERT INTO Invoice (InvoiceNo, CustomerId, Date, total, due, remark) VALUES ('" + NumericInvoiceNo.Text + "','" + cusid1 + "','" + date + "','" + TempTotal + "','" + (Convert.ToDecimal(TextBoxTotal.Text) - Convert.ToDecimal(TextBoxPaid.Text)).ToString() + "','" + TextBoxRemark.Text + "')");
                         DatabaseConnectObj.ExecutNonQuery();
                     }
                     catch (Exception ex)
                     {
-                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
+                        string output = ex.Message + " insert invoice first ButtonSave_Click"; MessageBox.Show(output);
                     }
 
                     try //select invoiceid to insert invoice with multiple invoice no.
@@ -467,19 +467,31 @@ namespace billing
                     }
                     catch (Exception ex)
                     {
-                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
+                        string output = ex.Message + " multiple invoice no ButtonSave_Click"; MessageBox.Show(output);
                     }
-                    try // insert the bill details
+                    try // insert the bill items details
                     {
                         for (int i = 0; i < dataGridView1.Rows.Count; i++)
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO BillDetailsInvoice (ItemNo, Quantity, price, InvoiceNo, Tax, invoiceid) VALUES ('" + dataGridView1.Rows[i].Cells["Itemid"].Value + "','" + dataGridView1.Rows[i].Cells["Quantity"].Value + "','" + dataGridView1.Rows[i].Cells["UnitPrice"].Value + "','" + NumericInvoiceNo.Text + "','" + dataGridView1.Rows[i].Cells["Tax"].Value + "','"+invoiceid+"')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO BillItemDetailsInvoice (InvoiceNo, ItemNo, Quantity, price, Tax, invoiceid) VALUES ('" + NumericInvoiceNo.Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Itemid"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Quantity"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["UnitPrice"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Tax"].Value.ToString().Trim() + "','" + invoiceid + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                     }
                     catch (Exception ex)
                     {
-                        string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
+                        string output = ex.Message + "items details ButtonSave_Click"; MessageBox.Show(output);
+                    }
+                    try // insert the bill labour details
+                    {
+                        for (int i = 0; i < DataGridLabour.Rows.Count; i++)
+                        {
+                            DatabaseConnectObj.SqlQuery("INSERT INTO BillLabourDetailInvoice (InvoiceNo, LabourNo, price, Tax, invoiceid) VALUES ('" + NumericInvoiceNo.Value.ToString().Trim() + "','" + DataGridLabour.Rows[i].Cells["LabourId"].Value.ToString().Trim() + "','" + DataGridLabour.Rows[i].Cells["LabourCharge"].Value.ToString().Trim() + "','" + DataGridLabour.Rows[i].Cells["LabourTax"].Value.ToString().Trim() + "','" + invoiceid + "')");
+                            DatabaseConnectObj.ExecutNonQuery();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string output = ex.Message + "labour details ButtonSave_Click"; MessageBox.Show(output);
                     }
                     if (CheckBoxSchedule.Checked.Equals(true)) // if scheduled box is checked schedule the message
                     {
@@ -493,7 +505,7 @@ namespace billing
                             }
                             catch (Exception ex)
                             {
-                                string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
+                                string output = ex.Message + " schedule the message ButtonSave_Click"; MessageBox.Show(output);
                             }
                             finally
                             {
@@ -517,16 +529,19 @@ namespace billing
                             }
                         }
                     }
-                    else
+                    if (CheckBoxSendSms.Checked.Equals(true))
                     {
-                        DatabaseConnectObj.DatabaseConnectionClose();
+                       
                     }
+                    DatabaseConnectObj.DatabaseConnectionClose();
                 }
                 catch (Exception ex)
                 {
                     string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                 }
                 ButtonSave.Enabled = false;
+                ButtonAddLabour.Enabled = false;
+                ButtonAdd.Enabled = false;
                 ButtonPreview.Enabled = true;
             }
             else
@@ -585,34 +600,66 @@ namespace billing
             //invoice no and date
             e.Graphics.DrawString("Issued ", FontDesc, Brushes.Gray, new Point(50, Height + Yincrement + 5));
             e.Graphics.DrawString(date.ToString(), FontDesc, Brushes.Black, new Point(110, Height += Yincrement+5));
-            //table
-            e.Graphics.DrawString("#", FontTitle, Brushes.Black, new Point(35, Height+=Yincrement+20));
-            e.Graphics.DrawString("Desc", FontTitle, Brushes.Black, new Point(90, Height));
-            e.Graphics.DrawString("Qty", FontTitle, Brushes.Black, new Point(335, Height));
-            e.Graphics.DrawString("Price", FontTitle, Brushes.Black, new Point(435, Height));
-            e.Graphics.DrawString("Tax", FontTitle, Brushes.Black, new Point(530, Height));
-            e.Graphics.DrawString("Total", FontTitle, Brushes.Black, new Point(635, Height));
-            e.Graphics.DrawLine(pent, new Point(30,Height+=Yincrement+10), new Point(800,Height));
-            //table content
-            int j;
-            for (j = i; j < dataGridView1.RowCount && Height < 920; j++)
+            int j=i;
+            int k = l;
+            if (j != dataGridView1.RowCount)
             {
-                e.Graphics.DrawString((j + 1).ToString(), FontDesc, Brushes.Black, new Point(35, Height+=Yincrement+10));
-                e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Desc"].Value.ToString(), FontDesc, Brushes.Black, new Point(90, Height));
-                e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Quantity"].Value.ToString(), FontDesc, Brushes.Black, new Point(339, Height));
-                e.Graphics.DrawString(dataGridView1.Rows[j].Cells["UnitPrice"].Value.ToString(), FontDesc, Brushes.Black, new Point(435, Height));
-                e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Tax"].Value.ToString(), FontDesc, Brushes.Black, new Point(535, Height));
-                e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Total"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
+                //table
+                e.Graphics.DrawString("#", FontTitle, Brushes.Black, new Point(35, Height += Yincrement + 20));
+                e.Graphics.DrawString("Item Name", FontTitle, Brushes.Black, new Point(90, Height));
+                e.Graphics.DrawString("Qty", FontTitle, Brushes.Black, new Point(335, Height));
+                e.Graphics.DrawString("Price", FontTitle, Brushes.Black, new Point(435, Height));
+                e.Graphics.DrawString("Tax", FontTitle, Brushes.Black, new Point(530, Height));
+                e.Graphics.DrawString("Total", FontTitle, Brushes.Black, new Point(635, Height));
+                e.Graphics.DrawLine(pent, new Point(30, Height += Yincrement + 10), new Point(800, Height));
+                //table content
+
+                for (j = i; j < dataGridView1.RowCount && Height < 920; j++)
+                {
+                    e.Graphics.DrawString((j + 1).ToString(), FontDesc, Brushes.Black, new Point(35, Height += Yincrement + 10));
+                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Desc"].Value.ToString(), FontDesc, Brushes.Black, new Point(90, Height));
+                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Quantity"].Value.ToString(), FontDesc, Brushes.Black, new Point(339, Height));
+                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["UnitPrice"].Value.ToString(), FontDesc, Brushes.Black, new Point(435, Height));
+                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Tax"].Value.ToString(), FontDesc, Brushes.Black, new Point(535, Height));
+                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Total"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
+                }
+            }
+            else
+            {
+                //table
+                e.Graphics.DrawString("#", FontTitle, Brushes.Black, new Point(35, Height += Yincrement + 20));
+                e.Graphics.DrawString("Labor", FontTitle, Brushes.Black, new Point(90, Height));
+                e.Graphics.DrawString("Charge", FontTitle, Brushes.Black, new Point(435, Height));
+                e.Graphics.DrawString("Tax", FontTitle, Brushes.Black, new Point(530, Height));
+                e.Graphics.DrawString("Total", FontTitle, Brushes.Black, new Point(635, Height));
+                e.Graphics.DrawLine(pent, new Point(30, Height += Yincrement + 10), new Point(800, Height));
+                //table content
+                for (k = l; k < DataGridLabour.RowCount && Height < 920; k++)
+                {
+                    e.Graphics.DrawString((k + 1).ToString(), FontDesc, Brushes.Black, new Point(35, Height += Yincrement + 10));
+                    e.Graphics.DrawString(DataGridLabour.Rows[k].Cells["LabourName"].Value.ToString(), FontDesc, Brushes.Black, new Point(90, Height));
+                    e.Graphics.DrawString(DataGridLabour.Rows[k].Cells["LabourCharge"].Value.ToString(), FontDesc, Brushes.Black, new Point(435, Height));
+                    e.Graphics.DrawString(DataGridLabour.Rows[k].Cells["LabourTax"].Value.ToString(), FontDesc, Brushes.Black, new Point(535, Height));
+                    e.Graphics.DrawString(DataGridLabour.Rows[k].Cells["LabourTotal"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
+                }
             }
             if (j < dataGridView1.RowCount)
             {
                 e.HasMorePages = true;
                 i = j;
             }
+            else if (k < DataGridLabour.RowCount)
+            {
+                e.HasMorePages = true;
+                i = j;
+                l = k;
+            }
             else
             {
                 e.HasMorePages = false;
                 j = 0;
+                k = 0;
+                l = 0;
                 i = 0;
             }
             //invoice total
@@ -915,14 +962,10 @@ namespace billing
 
         private void ButtonAddLabour_Click(object sender, EventArgs e)
         {
-            DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
-            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
-            DataRow[] labourRowData = laboursdata.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
-            string itemid1 = labourRowData[0]["ItemId"].ToString().Trim();
+            string labourId = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text.Trim() + "'")[0]["LabourId"].ToString().Trim();
 
             if (ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text.Trim()))
             {
-
                 if (EditFormFlag == true)
                 {
 
@@ -934,7 +977,7 @@ namespace billing
                     //add tax
                     labourTotal = labourTotal + (labourTotal * (Convert.ToDecimal(ComboBoxLabourTax.Text) / 100));
                     //add to data grid
-                    DataGridLabour.Rows.Add(ComboBoxLabourName.Text.ToString(), NumericLabourCharge.Value.ToString(), ComboBoxLabourTax.Text, labourTotal.ToString(), itemid1);
+                    DataGridLabour.Rows.Add(ComboBoxLabourName.Text.ToString(), NumericLabourCharge.Value.ToString(), ComboBoxLabourTax.Text, labourTotal.ToString(), labourId);
                     //update sub total
                     TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericLabourCharge.Value)).ToString();
                     //update total
@@ -1015,7 +1058,7 @@ namespace billing
                 try
                 {
                     DataRow labourRow = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text.Trim() + "'")[0];
-                    NumericUnitPrice.Value = Convert.ToDecimal(labourRow["LabourPrice"].ToString().Trim());
+                    NumericLabourCharge.Value = Convert.ToDecimal(labourRow["LabourPrice"].ToString().Trim());
                 }
                 catch (Exception ex)
                 {
@@ -1037,8 +1080,8 @@ namespace billing
                 DialogResult result = MessageBox.Show("the Labour does not exist, would you like to add a new Labour?", "Confirmation", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    NewLabour NewServiceObj = new NewLabour(ComboBoxLabourName.Text.Trim());
-                    NewServiceObj.ShowDialog();
+                    NewLabour NewLabourObj = new NewLabour(ComboBoxLabourName.Text.Trim());
+                    NewLabourObj.ShowDialog();
                     getLaboursData();
                     ComboBoxLabourName.Text = "";
                     ComboBoxLabourName.Focus();
