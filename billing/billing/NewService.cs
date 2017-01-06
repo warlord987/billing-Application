@@ -368,7 +368,7 @@ namespace billing
             }
             else
             {
-                TextBoxUnitPrice.Text = "";
+                TextBoxUnitPrice.Text = "1";
             }
         }
     }

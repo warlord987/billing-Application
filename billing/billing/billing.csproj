@@ -104,6 +104,12 @@
     <Compile Include="Edit.designer.cs">
       <DependentUpon>Edit.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewEstimate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewEstimate.Designer.cs">
+      <DependentUpon>NewEstimate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Help.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,12 +134,6 @@
     </Compile>
     <Compile Include="NewCustomer.Designer.cs">
       <DependentUpon>NewCustomer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NewEstimate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewEstimate.designer.cs">
-      <DependentUpon>NewEstimate.cs</DependentUpon>
     </Compile>
     <Compile Include="NewInvioce.cs">
       <SubType>Form</SubType>
@@ -238,6 +238,9 @@
     <EmbeddedResource Include="Edit.resx">
       <DependentUpon>Edit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewEstimate.resx">
+      <DependentUpon>NewEstimate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,9 +252,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewCustomer.resx">
       <DependentUpon>NewCustomer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NewEstimate.resx">
-      <DependentUpon>NewEstimate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewInvioce.resx">
       <DependentUpon>NewInvioce.cs</DependentUpon>

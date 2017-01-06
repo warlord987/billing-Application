@@ -25,6 +25,9 @@ namespace billing
         private DataTable laboursdata;
         private string vehicleno;
         private decimal Temp;
+        private DataTable dataItemsTable;
+        private DataTable dataLaborTable;
+        private string p;
 
         private void getCustomerData()
         {
@@ -37,6 +40,24 @@ namespace billing
             catch (Exception ex)
             {
                 string output = ex.Message + " getCustomerData"; MessageBox.Show(output);
+            }
+            finally
+            {
+                DatabaseConnectObj.DatabaseConnectionClose();
+            }
+        }
+
+        private void getLaboursData()
+        {
+            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
+            try
+            {
+                DatabaseConnectObj.SqlQuery("SELECT LabourId, LabourName, LabourDesc, LabourPrice FROM Labour");
+                laboursdata = DatabaseConnectObj.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                string output = ex.Message + " getLaboursData"; MessageBox.Show(output);
             }
             finally
             {
@@ -80,33 +101,7 @@ namespace billing
             }
         }
 
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape) this.Close();
-            bool res = base.ProcessCmdKey(ref msg, keyData);
-            return res;
-        }
-
-        //LinkedList<Decimal> listUnitPrice = new LinkedList<Decimal>();
-        public NewInvioce()
-        {
-            InitializeComponent();
-            FormLoadFlag = true;
-        }
-
-        public NewInvioce(DataTable dt,String st)
-        {
-            InitializeComponent();
-            FormLoadFlag = true;
-            dataGridView1.DataSource = dt;
-            EditFormFlag = true;
-            ComboBoxClientName.Text = st.Split(',').ElementAt(0).Trim();
-            LabelHidden.Text = st.Split(',').ElementAt(1);
-            ComboBoxVehicleModel.Text = st.Split(' ').ElementAt(2);
-        }
-
-        public void loadComboBoxItemName(DataTable customerTable,DataTable vehicleTable,DataTable itemsTable)
+        public void loadComboBoxItemName(DataTable customerTable, DataTable vehicleTable, DataTable itemsTable)
         {
             ComboBoxItemName.Text = "";
             ComboBoxItemName.Items.Clear();
@@ -160,6 +155,24 @@ namespace billing
             }
         }
 
+        private void loadTotalAndSubTotal()
+        {
+            Decimal tempTotal = 0;
+            Decimal tempSubTotal = 0;
+            foreach (DataGridViewRow row in dataGridItems.Rows)
+            {
+                tempTotal += Convert.ToDecimal(row.Cells["total"].Value);
+                tempSubTotal += Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value);
+            }
+            foreach (DataGridViewRow row in DataGridLabour.Rows)
+            {
+                tempTotal += Convert.ToDecimal(row.Cells["LabourTotal"].Value);
+                tempSubTotal += Convert.ToDecimal(row.Cells["LabourCharge"].Value);
+            }
+            TextBoxSubTotal.Text = tempSubTotal.ToString();
+            TextBoxTotal.Text = tempTotal.ToString();
+        }
+
         private void loadVehiclefield()
         {
             //move the vehicledata to a parent place so that the sql query shouldnt be executed every time a new customer is added
@@ -198,6 +211,35 @@ namespace billing
                 string output = ex.Message + " LoadCusCombobox"; MessageBox.Show(output);
             }
         }
+
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape) this.Close();
+            bool res = base.ProcessCmdKey(ref msg, keyData);
+            return res;
+        }
+
+        //LinkedList<Decimal> listUnitPrice = new LinkedList<Decimal>();
+        public NewInvioce()
+        {
+            InitializeComponent();
+            FormLoadFlag = true;
+        }
+
+        public NewInvioce(DataTable dataItemsTable, DataTable dataLaborTable, string st)
+        {
+            InitializeComponent();
+            FormLoadFlag = true;
+            dataGridItems.DataSource = dataItemsTable;
+            DataGridLabour.DataSource = dataLaborTable;
+            EditFormFlag = true;
+            ComboBoxClientName.Text = st.Split(',').ElementAt(0).Trim();
+            LabelHidden.Text = st.Split(',').ElementAt(1);
+            ComboBoxVehicleModel.Text = st.Split(' ').ElementAt(2);
+        }
+
+       
         private void NewInvioce_Load(object sender, EventArgs e)
         {
             DateTimePickerIssued.Value = DateTime.Today;
@@ -237,7 +279,7 @@ namespace billing
             {
                 Decimal TempTotal = 0;
                 Decimal TempSubTotal = 0;
-                foreach (DataGridViewRow row in dataGridView1.Rows)
+                foreach (DataGridViewRow row in dataGridItems.Rows)
                 {
                     decimal total = (Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value));
                     TempSubTotal += total;
@@ -250,23 +292,7 @@ namespace billing
             }
         }
 
-        private void getLaboursData()
-        {
-            ClassDatabaseConnection DatabaseConnectObj = new ClassDatabaseConnection();
-            try
-            {
-                DatabaseConnectObj.SqlQuery("SELECT LabourId, LabourName, LabourDesc, LabourPrice FROM Labour");
-                laboursdata = DatabaseConnectObj.ExecuteQuery();
-            }
-            catch (Exception ex)
-            {
-                string output = ex.Message + " getLaboursData"; MessageBox.Show(output);
-            }
-            finally
-            {
-                DatabaseConnectObj.DatabaseConnectionClose();
-            }
-        }
+       
 
         private void ComboBoxClientName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -367,7 +393,7 @@ namespace billing
             {
                 if (EditFormFlag == true)
                 {
-                    DataTable dataTable = (DataTable)dataGridView1.DataSource;
+                    DataTable dataTable = (DataTable)dataGridItems.DataSource;
                     DataRow drToAdd = dataTable.NewRow();
                     drToAdd["ItemDesc"] = ComboBoxItemName.Text.ToString();
                     drToAdd["Quantity"] = NumericQuantity.Value.ToString();
@@ -378,19 +404,6 @@ namespace billing
                     dataTable.AcceptChanges();
                     TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
                     TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))).ToString();
-                    Decimal TempTotal = 0;
-                    Decimal TempSubTotal = 0;
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
-                    {
-                        decimal total = (Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value));
-                        TempSubTotal += total;
-                        total = total + (total * (Convert.ToDecimal(row.Cells["Tax"].Value) / 100));
-                        row.Cells["Total"].Value = total;
-                        TempTotal += total;
-                    }
-                    TextBoxTotal.Text = TempTotal.ToString();
-                    TextBoxSubTotal.Text = TempSubTotal.ToString();
-
                 }
                 else
                 {
@@ -399,7 +412,7 @@ namespace billing
                     //add tax
                     total = total + (total * (Convert.ToDecimal(ComboboxItemTax.Text) / 100));
                     //add to data grid
-                    dataGridView1.Rows.Add(ComboBoxItemName.Text.ToString(), NumericQuantity.Value.ToString(), NumericUnitPrice.Value.ToString(), ComboboxItemTax.Text, total.ToString(), itemid1);
+                    dataGridItems.Rows.Add(ComboBoxItemName.Text.ToString(), NumericQuantity.Value.ToString(), NumericUnitPrice.Value.ToString(), ComboboxItemTax.Text, total.ToString(), itemid1);
                     //update sub total
                     TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
                     //update total
@@ -439,10 +452,10 @@ namespace billing
                         string date = DateTimePickerIssued.Value.Month.ToString() + "/" + DateTimePickerIssued.Value.Day.ToString() + "/" + DateTimePickerIssued.Value.Year.ToString();
                         DataTable dt = new DataTable();
                         decimal TempTotal = 0;
-                        for (int i = 0; i < dataGridView1.RowCount; i++)
+                        for (int i = 0; i < dataGridItems.RowCount; i++)
                         {
-                            decimal total = (Convert.ToDecimal(dataGridView1.Rows[i].Cells["Quantity"].Value) * Convert.ToDecimal(dataGridView1.Rows[i].Cells["UnitPrice"].Value));
-                            total = total + (total * (Convert.ToDecimal(dataGridView1.Rows[i].Cells["Tax"].Value) / 100));
+                            decimal total = (Convert.ToDecimal(dataGridItems.Rows[i].Cells["Quantity"].Value) * Convert.ToDecimal(dataGridItems.Rows[i].Cells["UnitPrice"].Value));
+                            total = total + (total * (Convert.ToDecimal(dataGridItems.Rows[i].Cells["Tax"].Value) / 100));
                             TempTotal += total;
                         }
                         for (int i = 0; i < DataGridLabour.RowCount;i++)
@@ -471,9 +484,9 @@ namespace billing
                     }
                     try // insert the bill items details
                     {
-                        for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                        for (int i = 0; i < dataGridItems.Rows.Count; i++)
                         {
-                            DatabaseConnectObj.SqlQuery("INSERT INTO BillItemDetailsInvoice (InvoiceNo, ItemNo, Quantity, price, Tax, invoiceid) VALUES ('" + NumericInvoiceNo.Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Itemid"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Quantity"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["UnitPrice"].Value.ToString().Trim() + "','" + dataGridView1.Rows[i].Cells["Tax"].Value.ToString().Trim() + "','" + invoiceid + "')");
+                            DatabaseConnectObj.SqlQuery("INSERT INTO BillItemDetailsInvoice (InvoiceNo, ItemNo, Quantity, price, Tax, invoiceid) VALUES ('" + NumericInvoiceNo.Value.ToString().Trim() + "','" + dataGridItems.Rows[i].Cells["Itemid"].Value.ToString().Trim() + "','" + dataGridItems.Rows[i].Cells["Quantity"].Value.ToString().Trim() + "','" + dataGridItems.Rows[i].Cells["UnitPrice"].Value.ToString().Trim() + "','" + dataGridItems.Rows[i].Cells["Tax"].Value.ToString().Trim() + "','" + invoiceid + "')");
                             DatabaseConnectObj.ExecutNonQuery();
                         }
                     }
@@ -531,7 +544,7 @@ namespace billing
                     }
                     if (CheckBoxSendSms.Checked.Equals(true))
                     {
-                       
+
                     }
                     DatabaseConnectObj.DatabaseConnectionClose();
                 }
@@ -602,7 +615,7 @@ namespace billing
             e.Graphics.DrawString(date.ToString(), FontDesc, Brushes.Black, new Point(110, Height += Yincrement+5));
             int j=i;
             int k = l;
-            if (j != dataGridView1.RowCount)
+            if (j != dataGridItems.RowCount)
             {
                 //table
                 e.Graphics.DrawString("#", FontTitle, Brushes.Black, new Point(35, Height += Yincrement + 20));
@@ -614,14 +627,14 @@ namespace billing
                 e.Graphics.DrawLine(pent, new Point(30, Height += Yincrement + 10), new Point(800, Height));
                 //table content
 
-                for (j = i; j < dataGridView1.RowCount && Height < 920; j++)
+                for (j = i; j < dataGridItems.RowCount && Height < 920; j++)
                 {
                     e.Graphics.DrawString((j + 1).ToString(), FontDesc, Brushes.Black, new Point(35, Height += Yincrement + 10));
-                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Desc"].Value.ToString(), FontDesc, Brushes.Black, new Point(90, Height));
-                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Quantity"].Value.ToString(), FontDesc, Brushes.Black, new Point(339, Height));
-                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["UnitPrice"].Value.ToString(), FontDesc, Brushes.Black, new Point(435, Height));
-                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Tax"].Value.ToString(), FontDesc, Brushes.Black, new Point(535, Height));
-                    e.Graphics.DrawString(dataGridView1.Rows[j].Cells["Total"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
+                    e.Graphics.DrawString(dataGridItems.Rows[j].Cells["Desc"].Value.ToString(), FontDesc, Brushes.Black, new Point(90, Height));
+                    e.Graphics.DrawString(dataGridItems.Rows[j].Cells["Quantity"].Value.ToString(), FontDesc, Brushes.Black, new Point(339, Height));
+                    e.Graphics.DrawString(dataGridItems.Rows[j].Cells["UnitPrice"].Value.ToString(), FontDesc, Brushes.Black, new Point(435, Height));
+                    e.Graphics.DrawString(dataGridItems.Rows[j].Cells["Tax"].Value.ToString(), FontDesc, Brushes.Black, new Point(535, Height));
+                    e.Graphics.DrawString(dataGridItems.Rows[j].Cells["Total"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
                 }
             }
             else
@@ -643,7 +656,7 @@ namespace billing
                     e.Graphics.DrawString(DataGridLabour.Rows[k].Cells["LabourTotal"].Value.ToString(), FontTotal, Brushes.Black, new Point(635, Height));
                 }
             }
-            if (j < dataGridView1.RowCount)
+            if (j < dataGridItems.RowCount)
             {
                 e.HasMorePages = true;
                 i = j;
@@ -691,39 +704,26 @@ namespace billing
         {
             //after add the value to the grid add to string or array or most probably linked list
             //then this function is called to change the total value in the grid and the total text box
-            string columnName = dataGridView1.Columns[e.ColumnIndex].Name.ToString().Trim();
+            string columnName = dataGridItems.Columns[e.ColumnIndex].Name.ToString().Trim();
 
-            if (FormLoadFlag == true && dataGridView1.Rows[e.RowIndex].Cells[columnName].Value != null)
+            if (FormLoadFlag == true && dataGridItems.Rows[e.RowIndex].Cells[columnName].Value != null)
             {
-                if (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
+                if (Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
                 {
                     DialogResult result = MessageBox.Show("Do you want to save changes?", "Confirmation", MessageBoxButtons.YesNo);
                     if (result == DialogResult.No)
                     {
-                        dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+                        dataGridItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
                     }
                 }
-                decimal total = (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["Quantity"].Value) * Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value));
-                total = total + (total * (Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["Tax"].Value) / 100));
-                dataGridView1.Rows[e.RowIndex].Cells["Total"].Value = total;
-                Decimal tempTotal = 0;
-                Decimal tempSubTotal = 0;
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
-                    tempTotal += Convert.ToDecimal(row.Cells["total"].Value);
-                    tempSubTotal += Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value);
-                }
-                foreach (DataGridViewRow row in DataGridLabour.Rows)
-                {
-                    tempTotal += Convert.ToDecimal(row.Cells["LabourTotal"].Value);
-                    tempSubTotal += Convert.ToDecimal(row.Cells["LabourCharge"].Value);
-                }
-                TextBoxSubTotal.Text = tempSubTotal.ToString();
-                TextBoxTotal.Text = tempTotal.ToString();
+                decimal total = (Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells["Quantity"].Value) * Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells["UnitPrice"].Value));
+                total = total + (total * (Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells["Tax"].Value) / 100));
+                dataGridItems.Rows[e.RowIndex].Cells["Total"].Value = total;
+                loadTotalAndSubTotal();
             }
-            else if (FormLoadFlag == true && dataGridView1.Rows[e.RowIndex].Cells["UnitPrice"].Value == null)
+            else if (FormLoadFlag == true && dataGridItems.Rows[e.RowIndex].Cells["UnitPrice"].Value == null)
             {
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+                dataGridItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
             }
         }
 
@@ -744,7 +744,7 @@ namespace billing
 
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            Temp = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+            Temp = Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
         }
 
 
@@ -1030,20 +1030,7 @@ namespace billing
                 decimal LabourTotal = (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourCharge"].Value));
                 LabourTotal = LabourTotal + (LabourTotal * (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourTax"].Value) / 100));
                 DataGridLabour.Rows[e.RowIndex].Cells["LabourTotal"].Value = LabourTotal;
-                Decimal tempTotal = 0;
-                Decimal tempSubTotal = 0;
-                foreach (DataGridViewRow row in DataGridLabour.Rows)
-                {
-                    tempTotal += Convert.ToDecimal(row.Cells["LabourTotal"].Value);
-                    tempSubTotal += Convert.ToDecimal(row.Cells["LabourCharge"].Value);
-                }
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
-                    tempTotal += Convert.ToDecimal(row.Cells["total"].Value);
-                    tempSubTotal += Convert.ToDecimal(row.Cells["Quantity"].Value) * Convert.ToDecimal(row.Cells["UnitPrice"].Value);
-                }
-                TextBoxSubTotal.Text = tempSubTotal.ToString();
-                TextBoxTotal.Text = tempTotal.ToString();
+                loadTotalAndSubTotal();
             }
             else if (FormLoadFlag == true && DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value == null)
             {
@@ -1088,6 +1075,21 @@ namespace billing
                 }
                 ComboBoxLabourName.Text = "";
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
