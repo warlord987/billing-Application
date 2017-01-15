@@ -553,6 +553,7 @@
             this.TextBoxPaid.Font = new System.Drawing.Font("Cambria", 8F, System.Drawing.FontStyle.Bold);
             this.TextBoxPaid.Location = new System.Drawing.Point(611, 693);
             this.TextBoxPaid.Name = "TextBoxPaid";
+            this.TextBoxPaid.ReadOnly = true;
             this.TextBoxPaid.Size = new System.Drawing.Size(159, 20);
             this.TextBoxPaid.TabIndex = 27;
             this.TextBoxPaid.Text = "0";
@@ -859,6 +860,7 @@
             this.ComboboxItemTax.Size = new System.Drawing.Size(57, 20);
             this.ComboboxItemTax.TabIndex = 15;
             this.ComboboxItemTax.Text = "14.5";
+            this.ComboboxItemTax.Leave += new System.EventHandler(this.ComboboxItemTax_Leave);
             // 
             // ComboBoxClientName
             // 

@@ -31,7 +31,6 @@ namespace billing
         {
             ComboBoxLabourName.Text = "";
             ComboBoxLabourName.Items.Clear();
-
             try
             {
                 foreach (DataRow row in LabourTable.Rows)
@@ -110,6 +109,11 @@ namespace billing
         private void ComboBoxLabourName_SelectedIndexChanged(object sender, EventArgs e)
         {
             TextBoxUnitPrice.Text = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text + "'")[0]["LabourPrice"].ToString().Trim();
+        }
+
+        private void NewLabour_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.KeyChar = char.ToUpper(e.KeyChar);
         }
     }
 }

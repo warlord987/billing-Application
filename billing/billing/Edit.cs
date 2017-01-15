@@ -21,6 +21,7 @@ namespace billing
         private DataTable itemsData;
         private DataTable customerData;
         private decimal Temp;
+        private string due;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Escape) this.Close();
@@ -244,7 +245,23 @@ namespace billing
                 {
                     string output = ex.Message + " load labour details"; MessageBox.Show(output);
                 }
-
+                if (typeEdit == "Invoice")
+                {
+                    try
+                    {
+                        DataTable dt = new DataTable();
+                        DatabaseConnectObj.SqlQuery("SELECT due FROM " + typeEdit + " WHERE (" + typeEdit + "id = '" + LableInvoiceId.Text + "')");
+                        dt = DatabaseConnectObj.ExecuteQuery();
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            due = row["due"].ToString().Trim();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string output = ex.Message + " load due details"; MessageBox.Show(output);
+                    }
+                }
                 //get remark
                 try
                 {
@@ -272,6 +289,10 @@ namespace billing
 
             //load the total and sub total
             loadTotalAndSubTotal();
+            if (typeEdit == "Invoice")
+            {
+                TextBoxPaid.Text = (Convert.ToDecimal(TextBoxTotal.Text.Trim()) - Convert.ToDecimal(due.Trim())).ToString();
+            }
         }
 
       /*  private void TextBoxCusName_TextChanged(object sender, EventArgs e)

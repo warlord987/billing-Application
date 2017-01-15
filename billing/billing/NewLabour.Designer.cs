@@ -134,6 +134,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewLabour";
             this.Load += new System.EventHandler(this.NewLabour_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewLabour_KeyPress);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

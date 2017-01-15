@@ -305,12 +305,12 @@ namespace billing
 
         private void ButtonAdd_Click(object sender, EventArgs e)
         {
-            DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
-            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
-            DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
-            string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
             if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
             {
+                DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
+                string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
                 if (EditFormFlag == true)
                 {
                     DataTable dataTable = (DataTable)dataGridItems.DataSource;
@@ -327,16 +327,18 @@ namespace billing
                 }
                 else
                 {
+                    decimal unitprice = Math.Round(NumericUnitPrice.Value, 2);
+                    decimal quantity = NumericQuantity.Value;
                     //calculate total without tax
-                    decimal total = (Convert.ToDecimal(NumericQuantity.Value) * Convert.ToDecimal(NumericUnitPrice.Value));
+                    decimal total = (quantity * unitprice);
                     //add tax
-                    total = total + (total * (Convert.ToDecimal(ComboboxItemTax.Text) / 100));
+                    total = Math.Round(total + (total * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)), 2);
                     //add to data grid
-                    dataGridItems.Rows.Add(ComboBoxItemName.Text.ToString(), NumericQuantity.Value.ToString(), NumericUnitPrice.Value.ToString(), ComboboxItemTax.Text, total.ToString(), itemid1);
+                    dataGridItems.Rows.Add(ComboBoxItemName.Text.ToString(), quantity.ToString(), unitprice.ToString(), ComboboxItemTax.Text, total.ToString(), itemid1);
                     //update sub total
-                    TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
+                    TextBoxSubTotal.Text = Math.Round((Convert.ToDecimal(TextBoxSubTotal.Text) + (unitprice * quantity)), 2).ToString();
                     //update total
-                    TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))).ToString();
+                    TextBoxTotal.Text = Math.Round((Convert.ToDecimal(TextBoxTotal.Text) + quantity * (unitprice + (unitprice * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))), 2).ToString();
                 }
                 ComboBoxItemName.Focus();
                 ButtonSave.Enabled = true;
@@ -628,6 +630,13 @@ namespace billing
 
             if (FormLoadFlag == true && dataGridItems.Rows[e.RowIndex].Cells[columnName].Value != null)
             {
+                string datagridtax = dataGridItems.Rows[e.RowIndex].Cells[columnName].Value.ToString();
+                string datagridunitprice = dataGridItems.Rows[e.RowIndex].Cells["UnitPrice"].Value.ToString(); ;
+                if (datagridtax.EndsWith("q"))
+                {
+                    dataGridItems.Rows[e.RowIndex].Cells["UnitPrice"].Value = Math.Round((Convert.ToDecimal(datagridunitprice)) / ((Convert.ToDecimal(datagridtax.Split('q')[0]) / 100) + 1), 2);
+                    dataGridItems.Rows[e.RowIndex].Cells[columnName].Value = datagridtax.Split('q')[0];
+                }
                 if (Convert.ToDecimal(dataGridItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
                 {
                     DialogResult result = MessageBox.Show("Do you want to save changes?", "Confirmation", MessageBoxButtons.YesNo);
@@ -935,7 +944,34 @@ namespace billing
 
         private void DataGridLabour_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            string columnName = DataGridLabour.Columns[e.ColumnIndex].Name.ToString().Trim();
 
+            if (FormLoadFlag == true && DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value != null)
+            {
+                string datagridtax = DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value.ToString();
+                string datagridunitprice = DataGridLabour.Rows[e.RowIndex].Cells["UnitPrice"].Value.ToString(); ;
+                if (datagridtax.EndsWith("q"))
+                {
+                    DataGridLabour.Rows[e.RowIndex].Cells["UnitPrice"].Value = Math.Round((Convert.ToDecimal(datagridunitprice)) / ((Convert.ToDecimal(datagridtax.Split('q')[0]) / 100) + 1), 2);
+                    DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value = datagridtax.Split('q')[0];
+                }
+                if (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) < Temp)
+                {
+                    DialogResult result = MessageBox.Show("Do you want to save changes?", "Confirmation", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.No)
+                    {
+                        DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+                    }
+                }
+                decimal LabourTotal = (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourCharge"].Value));
+                LabourTotal = LabourTotal + (LabourTotal * (Convert.ToDecimal(DataGridLabour.Rows[e.RowIndex].Cells["LabourTax"].Value) / 100));
+                DataGridLabour.Rows[e.RowIndex].Cells["LabourTotal"].Value = LabourTotal;
+                loadTotalAndSubTotal();
+            }
+            else if (FormLoadFlag == true && DataGridLabour.Rows[e.RowIndex].Cells[columnName].Value == null)
+            {
+                DataGridLabour.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Temp;
+            }
         }
 
         private void ComboBoxLabourName_SelectedIndexChanged(object sender, EventArgs e)
@@ -1026,6 +1062,15 @@ namespace billing
                 }
                 TextBoxTotal.Text = TempTotal.ToString();
                 TextBoxSubTotal.Text = TempSubTotal.ToString();
+            }
+        }
+
+        private void ComboboxItemTax_Leave(object sender, EventArgs e)
+        {
+            if (ComboboxItemTax.Text.EndsWith("q"))
+            {
+                NumericUnitPrice.Value = (NumericUnitPrice.Value) / ((Convert.ToDecimal(ComboboxItemTax.Text.Split('q')[0]) / 100) + 1);
+                ComboboxItemTax.Text = ComboboxItemTax.Text.Split('q')[0];
             }
         }
     }

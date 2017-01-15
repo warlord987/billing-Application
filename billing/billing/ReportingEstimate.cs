@@ -362,8 +362,8 @@ namespace billing
 
         private void ButtonNewEstimate_Click_1(object sender, EventArgs e)
         {
-            //NewEstimate NewEstimateObj = new NewEstimate();
-            //NewEstimateObj.ShowDialog();
+            NewEstimate NewEstimateObj = new NewEstimate();
+            NewEstimateObj.ShowDialog();
         }
 
 
