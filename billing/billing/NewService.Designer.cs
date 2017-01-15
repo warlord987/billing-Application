@@ -78,6 +78,7 @@
             this.ComboBoxItemName.TabIndex = 2;
             this.ComboBoxItemName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxItemName_SelectedIndexChanged);
             this.ComboBoxItemName.Enter += new System.EventHandler(this.ComboBoxItemName_Enter);
+            this.ComboBoxItemName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewService_KeyPress);
             this.ComboBoxItemName.Leave += new System.EventHandler(this.ComboBoxItemName_Leave);
             // 
             // ComboBoxVehicleName
@@ -91,6 +92,7 @@
             this.ComboBoxVehicleName.Size = new System.Drawing.Size(223, 20);
             this.ComboBoxVehicleName.TabIndex = 1;
             this.ComboBoxVehicleName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleName_SelectedIndexChanged);
+            this.ComboBoxVehicleName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewService_KeyPress);
             this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
             // 
             // LabelVehicleName

@@ -242,6 +242,7 @@
             this.ComboBoxLabourName.TabIndex = 18;
             this.ComboBoxLabourName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLabourName_SelectedIndexChanged);
             this.ComboBoxLabourName.Enter += new System.EventHandler(this.ComboBoxLabourName_Enter);
+            this.ComboBoxLabourName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboBoxLabourName.Leave += new System.EventHandler(this.ComboBoxLabourName_Leave);
             // 
             // NumericLabourCharge
@@ -294,6 +295,8 @@
             this.ComboBoxLabourTax.Size = new System.Drawing.Size(142, 20);
             this.ComboBoxLabourTax.TabIndex = 21;
             this.ComboBoxLabourTax.Text = "0.0";
+            this.ComboBoxLabourTax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
+            this.ComboBoxLabourTax.Leave += new System.EventHandler(this.ComboBoxLabourTax_Leave);
             // 
             // ButtonAddLabour
             // 
@@ -391,6 +394,7 @@
             this.DataGridLabour.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DataGridLabour_CellBeginEdit);
             this.DataGridLabour.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridLabour_CellEndEdit);
             this.DataGridLabour.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridLabour_UserDeletingRow);
+            this.DataGridLabour.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             // 
             // LabourName
             // 
@@ -463,7 +467,8 @@
             this.ComboBoxVehicleName.Name = "ComboBoxVehicleName";
             this.ComboBoxVehicleName.Size = new System.Drawing.Size(219, 20);
             this.ComboBoxVehicleName.TabIndex = 9;
-            this.ComboBoxVehicleName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClientName_SelectedIndexChanged);
+            this.ComboBoxVehicleName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleName_SelectedIndexChanged);
+            this.ComboBoxVehicleName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboBoxVehicleName.Leave += new System.EventHandler(this.ComboBoxVehicleName_Leave);
             // 
             // label14
@@ -534,6 +539,7 @@
             this.ComboBoxVehicleModel.Size = new System.Drawing.Size(220, 20);
             this.ComboBoxVehicleModel.TabIndex = 7;
             this.ComboBoxVehicleModel.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVehicleModel_SelectedIndexChanged);
+            this.ComboBoxVehicleModel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboBoxVehicleModel.Leave += new System.EventHandler(this.ComboBoxVehicleModel_Leave);
             // 
             // label18
@@ -589,6 +595,7 @@
             this.TextBoxRemark.Size = new System.Drawing.Size(510, 45);
             this.TextBoxRemark.TabIndex = 24;
             this.TextBoxRemark.Text = "";
+            this.TextBoxRemark.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             // 
             // ComboBoxItemName
             // 
@@ -602,6 +609,7 @@
             this.ComboBoxItemName.TabIndex = 11;
             this.ComboBoxItemName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxItemName_SelectedIndexChanged);
             this.ComboBoxItemName.Enter += new System.EventHandler(this.ComboBoxItemName_Enter);
+            this.ComboBoxItemName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboBoxItemName.Leave += new System.EventHandler(this.ComboBoxItemName_Leave);
             // 
             // dateTimePickerSchedule
@@ -753,6 +761,7 @@
             this.dataGridItems.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
             this.dataGridItems.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.dataGridItems.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
+            this.dataGridItems.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             // 
             // Desc
             // 
@@ -860,6 +869,7 @@
             this.ComboboxItemTax.Size = new System.Drawing.Size(57, 20);
             this.ComboboxItemTax.TabIndex = 15;
             this.ComboboxItemTax.Text = "14.5";
+            this.ComboboxItemTax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboboxItemTax.Leave += new System.EventHandler(this.ComboboxItemTax_Leave);
             // 
             // ComboBoxClientName
@@ -873,6 +883,7 @@
             this.ComboBoxClientName.Size = new System.Drawing.Size(220, 20);
             this.ComboBoxClientName.TabIndex = 0;
             this.ComboBoxClientName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClientName_SelectedIndexChanged);
+            this.ComboBoxClientName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewEstimate_KeyPress);
             this.ComboBoxClientName.Leave += new System.EventHandler(this.TextBoxTotal_TextChanged);
             // 
             // label9
