@@ -38,8 +38,8 @@ namespace billing
                     {
                         byte[] response = wb.UploadValues("http://api.textlocal.in/send/", new NameValueCollection()
                         {
-                        {"username" , "muralikrishna6543@gmail.com"},
-                        {"hash" , "6465095981aa3c0ef027314496be2863646d04d2"},
+                        {"username" , "naseer036@gmail.com"},
+                        {"hash" , "30d4019a197f1e8f318c7b39f886312e54c8fb6b"},
                         {"numbers" , TextBoxCusNumb.Text},
                         {"message" , message},
                         {"sender" , "TXTLCL"}

@@ -43,7 +43,6 @@ E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.Hel
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.MainForm.resources
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.MountlyReport.resources
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewCustomer.resources
-E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewEstimate.resources
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewInvioce.resources
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewService.resources
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewVoucher.resources
@@ -60,3 +59,5 @@ E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.Sel
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.csproj.GenerateResource.Cache
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\RdlCompile.cache
 E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\RdlCompile.compiled
+E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewLabour.resources
+E:\naseer_proj\billing\billing-Application\billing\billing\obj\Debug\billing.NewEstimate.resources

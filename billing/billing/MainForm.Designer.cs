@@ -61,6 +61,7 @@
             this.labelSchedule = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -167,7 +168,7 @@
             this.LabelTools.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.LabelTools.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelTools.ForeColor = System.Drawing.Color.DarkRed;
-            this.LabelTools.Location = new System.Drawing.Point(698, 425);
+            this.LabelTools.Location = new System.Drawing.Point(698, 441);
             this.LabelTools.Name = "LabelTools";
             this.LabelTools.Size = new System.Drawing.Size(58, 23);
             this.LabelTools.TabIndex = 7;
@@ -180,7 +181,7 @@
             this.LabelBackup.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LabelBackup.Font = new System.Drawing.Font("Cambria", 10F);
             this.LabelBackup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.LabelBackup.Location = new System.Drawing.Point(723, 448);
+            this.LabelBackup.Location = new System.Drawing.Point(723, 464);
             this.LabelBackup.Name = "LabelBackup";
             this.LabelBackup.Size = new System.Drawing.Size(112, 16);
             this.LabelBackup.TabIndex = 12;
@@ -194,7 +195,7 @@
             this.LabelRestore.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LabelRestore.Font = new System.Drawing.Font("Cambria", 10F);
             this.LabelRestore.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.LabelRestore.Location = new System.Drawing.Point(723, 464);
+            this.LabelRestore.Location = new System.Drawing.Point(723, 480);
             this.LabelRestore.Name = "LabelRestore";
             this.LabelRestore.Size = new System.Drawing.Size(120, 16);
             this.LabelRestore.TabIndex = 13;
@@ -371,7 +372,7 @@
             this.labelSchedule.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelSchedule.Font = new System.Drawing.Font("Cambria", 10F);
             this.labelSchedule.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.labelSchedule.Location = new System.Drawing.Point(723, 409);
+            this.labelSchedule.Location = new System.Drawing.Point(723, 425);
             this.labelSchedule.Name = "labelSchedule";
             this.labelSchedule.Size = new System.Drawing.Size(99, 16);
             this.labelSchedule.TabIndex = 11;
@@ -404,12 +405,26 @@
             this.label1.Text = "Mounthly Report";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label2.AutoSize = true;
+            this.label2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label2.Font = new System.Drawing.Font("Cambria", 10F);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label2.Location = new System.Drawing.Point(724, 409);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Labor";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(1321, 825);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.labelSchedule);
@@ -474,6 +489,7 @@
         private System.Windows.Forms.ToolStripMenuItem mounthlyReportToolStripMenuItem;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

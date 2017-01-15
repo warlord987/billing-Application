@@ -104,6 +104,12 @@
     <Compile Include="Edit.designer.cs">
       <DependentUpon>Edit.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewEstimate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewEstimate.Designer.cs">
+      <DependentUpon>NewEstimate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Help.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,17 +135,17 @@
     <Compile Include="NewCustomer.Designer.cs">
       <DependentUpon>NewCustomer.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewEstimate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewEstimate.designer.cs">
-      <DependentUpon>NewEstimate.cs</DependentUpon>
-    </Compile>
     <Compile Include="NewInvioce.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NewInvioce.Designer.cs">
       <DependentUpon>NewInvioce.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewLabour.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewLabour.Designer.cs">
+      <DependentUpon>NewLabour.cs</DependentUpon>
     </Compile>
     <Compile Include="NewService.cs">
       <SubType>Form</SubType>
@@ -232,6 +238,9 @@
     <EmbeddedResource Include="Edit.resx">
       <DependentUpon>Edit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewEstimate.resx">
+      <DependentUpon>NewEstimate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
@@ -244,11 +253,11 @@
     <EmbeddedResource Include="NewCustomer.resx">
       <DependentUpon>NewCustomer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewEstimate.resx">
-      <DependentUpon>NewEstimate.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="NewInvioce.resx">
       <DependentUpon>NewInvioce.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewLabour.resx">
+      <DependentUpon>NewLabour.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewService.resx">
       <DependentUpon>NewService.cs</DependentUpon>
