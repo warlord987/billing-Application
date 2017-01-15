@@ -104,6 +104,7 @@ namespace billing
                 {
                     string output = ex.Message + " ButtonSave_Click"; MessageBox.Show(output);
                 }
+                this.Close();
         }
 
         private void ComboBoxLabourName_SelectedIndexChanged(object sender, EventArgs e)

@@ -369,12 +369,15 @@ namespace billing
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            Edit EditObj = new Edit();
-            int rowind = e.RowIndex;
-            EditObj.passvalue = dataGridView1.Rows[rowind].Cells["EstimateNo"].Value.ToString() + ",Estimate," + " " + dataGridView1.Rows[rowind].Cells["CustomerName"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["Date"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["VehicleNo"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["Estimateid"].Value.ToString();
-            if (!(EditObj.ShowDialog() == DialogResult.OK))
+            if (e.RowIndex >= 0)
             {
-                ReportingEstimate_Load(this, null);
+                Edit EditObj = new Edit();
+                int rowind = e.RowIndex;
+                EditObj.passvalue = dataGridView1.Rows[rowind].Cells["EstimateNo"].Value.ToString() + ",Estimate," + " " + dataGridView1.Rows[rowind].Cells["CustomerName"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["Date"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["VehicleNo"].Value.ToString().Trim() + "," + dataGridView1.Rows[rowind].Cells["Estimateid"].Value.ToString();
+                if (!(EditObj.ShowDialog() == DialogResult.OK))
+                {
+                    ReportingEstimate_Load(this, null);
+                }
             }
         }
 

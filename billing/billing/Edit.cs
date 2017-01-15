@@ -200,6 +200,7 @@ namespace billing
             getItemsData();
             getLaboursData();
 
+
             //get invoice detail from reposrt window
             String[] substrings = nm.Split(',');            //get value as a object instead of using pass value
             typeEdit = substrings[1];
@@ -207,7 +208,9 @@ namespace billing
             if (typeEdit == "Estimate")
             {
                 ButtonMakeInvoice.Visible = true;
+                TextBoxPaid.Enabled = false;
             }
+
             NumericInvoiceNo.Value = Convert.ToDecimal(substrings[0].ToString().Trim());
             string vehicleIdOfThisInvoice = customerData.Select("VehicleNo = '" + substrings[4].ToString().Trim() + "'")[0]["VehicleId"].ToString().Trim();
             DataRow vehicleRowOfThisInvoice = vehicledata.Select("Id = '" + vehicleIdOfThisInvoice + "'")[0];
@@ -472,17 +475,22 @@ namespace billing
                 {
                     MessageBox.Show(ex.Message);
                 }
-                try // insert the bill details
+                try // insert the bill details create a trigger  for this to remove this part of code
                 {
-                    for (int i = 0; i < dataGridItems.Rows.Count; i++)
+                    if (typeEdit == "Invoice")
                     {
-                        DatabaseConnectObj.SqlQuery("UPDATE "+typeEdit+" SET total = '"+TextBoxTotal.Text+"', remark = '"+TextBoxRemark.Text+"' WHERE ("+typeEdit+"id = '"+ LableInvoiceId.Text+"')");
+                        DatabaseConnectObj.SqlQuery("UPDATE " + typeEdit + " SET total = '" + TextBoxTotal.Text + "',due = '"+(Convert.ToDecimal(TextBoxTotal.Text.Trim())-Convert.ToDecimal(TextBoxPaid.Text.Trim()))+"', remark = '" + TextBoxRemark.Text + "' WHERE (" + typeEdit + "id = '" + LableInvoiceId.Text + "')");
+                        DatabaseConnectObj.ExecutNonQuery();
+                    }
+                    else
+                    {
+                        DatabaseConnectObj.SqlQuery("UPDATE " + typeEdit + " SET total = '" + TextBoxTotal.Text + "', remark = '" + TextBoxRemark.Text + "' WHERE (" + typeEdit + "id = '" + LableInvoiceId.Text + "')");
                         DatabaseConnectObj.ExecutNonQuery();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+
                 }
                 finally
                 {
@@ -491,7 +499,6 @@ namespace billing
                 ButtonUpdate.Enabled = false;
                 ButtonPreview.Enabled = true;
                 ButtonMakeInvoice.Enabled = true;
-                
             }
             catch (Exception ex)
             {
@@ -506,12 +513,12 @@ namespace billing
 
         private void ButtonAdd_Click_1(object sender, EventArgs e)
         {
-            DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
-            string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
-            DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
-            string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
             if (ComboBoxItemName.Items.Contains(ComboBoxItemName.Text))
             {
+                DataRow[] vehicleRowData = vehicledata.Select("VehicleType='" + ComboBoxVehicleModel.Text.Trim() + "' AND VehicleName='" + ComboBoxVehicleName.Text.Trim() + "'");
+                string selectedVehicleId = vehicleRowData[0]["Id"].ToString().Trim();
+                DataRow[] itemRowData = itemsData.Select("VehicleId = '" + selectedVehicleId + "' AND ItemName = '" + ComboBoxItemName.Text.Trim() + "'");
+                string itemid1 = itemRowData[0]["ItemId"].ToString().Trim();
                 DataTable dataTable = (DataTable)dataGridItems.DataSource;
                 DataRow drToAdd = dataTable.NewRow();
                 drToAdd["ItemName"] = ComboBoxItemName.Text.ToString();
@@ -630,9 +637,9 @@ namespace billing
 
         private void ButtonAddLabour_Click(object sender, EventArgs e)
         {
-            string labourId = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text.Trim() + "'")[0]["LabourId"].ToString().Trim();
             if (ComboBoxLabourName.Items.Contains(ComboBoxLabourName.Text.Trim()))
             {
+                string labourId = laboursdata.Select("LabourName = '" + ComboBoxLabourName.Text.Trim() + "'")[0]["LabourId"].ToString().Trim();
                 DataTable dataTable = (DataTable)DataGridLabour.DataSource;
                 DataRow drToAdd = dataTable.NewRow();
                 drToAdd["LabourName"] = ComboBoxLabourName.Text.ToString();
@@ -655,9 +662,9 @@ namespace billing
         {
             try
             {
-                Decimal subtotal = Convert.ToInt32(e.Row.Cells["UnitPrice"].Value) * Convert.ToInt32(e.Row.Cells["Quantity"].Value);
+                Decimal subtotal = Convert.ToDecimal(e.Row.Cells["UnitPrice"].Value) * Convert.ToDecimal(e.Row.Cells["Quantity"].Value);
                 Decimal total = Convert.ToDecimal(e.Row.Cells["Total"].Value);
-                TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) - subtotal).ToString();
+                TextBoxSubTotal.Text = (Convert.ToDecimal(TextBoxSubTotal.Text) - subtotal).ToString();
                 TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) - total).ToString();
             }
             catch (Exception ex)
@@ -702,9 +709,9 @@ namespace billing
         {
             try
             {
-                Decimal subtotal = Convert.ToInt32(e.Row.Cells["LabourCharge"].Value);
+                Decimal subtotal = Convert.ToDecimal(e.Row.Cells["LabourCharge"].Value);
                 Decimal total = Convert.ToDecimal(e.Row.Cells["LabourTotal"].Value);
-                TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) - subtotal).ToString();
+                TextBoxSubTotal.Text = (Convert.ToDecimal(TextBoxSubTotal.Text) - subtotal).ToString();
                 TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) - total).ToString();
             }
             catch (Exception ex)

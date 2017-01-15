@@ -406,7 +406,7 @@ namespace billing
                     drToAdd["ItemNo"] = itemid1;
                     dataTable.Rows.Add(drToAdd);
                     dataTable.AcceptChanges();
-                    TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
+                    TextBoxSubTotal.Text = (Convert.ToDecimal(TextBoxSubTotal.Text) + (NumericUnitPrice.Value * NumericQuantity.Value)).ToString();
                     TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericUnitPrice.Value + (NumericUnitPrice.Value * (Convert.ToDecimal(ComboboxItemTax.Text) / 100)))).ToString();
                 }
                 else
@@ -745,9 +745,9 @@ namespace billing
         {
             try
             {
-                Decimal subtotal = Convert.ToInt32(e.Row.Cells["UnitPrice"].Value) * Convert.ToInt32(e.Row.Cells["Quantity"].Value);
+                Decimal subtotal = Convert.ToDecimal(e.Row.Cells["UnitPrice"].Value) * Convert.ToDecimal(e.Row.Cells["Quantity"].Value);
                 Decimal total = Convert.ToDecimal(e.Row.Cells["Total"].Value);
-                TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) - subtotal).ToString();
+                TextBoxSubTotal.Text = (Convert.ToDecimal(TextBoxSubTotal.Text) - subtotal).ToString();
                 TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) - total).ToString();
             }
             catch (Exception ex)
@@ -1013,7 +1013,7 @@ namespace billing
                     //add to data grid
                     DataGridLabour.Rows.Add(ComboBoxLabourName.Text.ToString(),Math.Round(NumericLabourCharge.Value,2).ToString(), ComboBoxLabourTax.Text, labourTotal.ToString(), labourId);
                     //update sub total
-                    TextBoxSubTotal.Text = Math.Round((Convert.ToInt32(TextBoxSubTotal.Text) + (NumericLabourCharge.Value)),2).ToString();
+                    TextBoxSubTotal.Text = Math.Round((Convert.ToDecimal(TextBoxSubTotal.Text) + (NumericLabourCharge.Value)),2).ToString();
                     //update total
                     TextBoxTotal.Text = Math.Round((Convert.ToDecimal(TextBoxTotal.Text) + NumericQuantity.Value * (NumericLabourCharge.Value + (NumericLabourCharge.Value * (Convert.ToDecimal(ComboBoxLabourTax.Text) / 100)))),2).ToString();                
                 }
@@ -1031,9 +1031,9 @@ namespace billing
         {
             try
             {
-                Decimal subtotal = Convert.ToInt32(e.Row.Cells["LabourCharge"].Value);
+                Decimal subtotal = Convert.ToDecimal(e.Row.Cells["LabourCharge"].Value);
                 Decimal total = Convert.ToDecimal(e.Row.Cells["LabourTotal"].Value);
-                TextBoxSubTotal.Text = (Convert.ToInt32(TextBoxSubTotal.Text) - subtotal).ToString();
+                TextBoxSubTotal.Text = (Convert.ToDecimal(TextBoxSubTotal.Text) - subtotal).ToString();
                 TextBoxTotal.Text = (Convert.ToDecimal(TextBoxTotal.Text) - total).ToString();
             }
             catch (Exception ex)
@@ -1089,7 +1089,7 @@ namespace billing
                 }
                 catch (Exception ex)
                 {
-                    string output = ex.Message + " ComboBoxItemName_SelectedIndexChanged"; MessageBox.Show(output);
+                    string output = ex.Message + " ComboBoxLabourName_SelectedIndexChanged"; MessageBox.Show(output);
                 }
             }
         }
